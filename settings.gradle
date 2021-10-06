@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "FabricateOverlay"
 include ':app'
+include ':fabricateoverlay'

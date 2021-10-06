@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("tk.zwander.fabricateoverlay", appContext.packageName)
+        assertEquals("tk.zwander.fabricateoverlay.test", appContext.packageName)
     }
 }
