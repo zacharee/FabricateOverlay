@@ -20,7 +20,7 @@ class FabricatedOverlayAPI private constructor(private val iomService: IBinder) 
 
                     val service = IShizukuService.Stub.asInterface(binder)
 
-                    instance = FabricatedOverlayAPI(service.iom)
+                    instance = FabricatedOverlayAPI(ShizukuBinderWrapper(service.iom))
 
                     callbacks.forEach { callback ->
                         callback(instance!!)
@@ -68,6 +68,12 @@ class FabricatedOverlayAPI private constructor(private val iomService: IBinder) 
                         Shizuku.bindUserService(serviceArgs, connection)
                     }
                 }
+            }
+        }
+
+        fun getInstance(iOverlayManager: IBinder): FabricatedOverlayAPI {
+            return instance ?: FabricatedOverlayAPI(iOverlayManager).apply {
+                instance = this
             }
         }
 
@@ -130,7 +136,7 @@ class FabricatedOverlayAPI private constructor(private val iomService: IBinder) 
             IBinder::class.java
         ).invoke(
             null,
-            ShizukuBinderWrapper(iomService)
+            iomService
         )
 
         iomClass.getMethod(
