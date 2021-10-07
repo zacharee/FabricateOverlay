@@ -10,7 +10,7 @@ package tk.zwander.fabricateoverlay
  *   to resources that can be represented as integers.
  */
 data class FabricatedOverlayEntry(
-    val resourceName: String,
-    val resourceType: Int,
-    val resourceValue: Int
+    var resourceName: String,
+    var resourceType: Int,
+    var resourceValue: Int
 )
