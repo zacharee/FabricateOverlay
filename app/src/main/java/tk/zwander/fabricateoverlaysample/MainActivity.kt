@@ -3,6 +3,7 @@ package tk.zwander.fabricateoverlaysample
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import tk.zwander.fabricateoverlay.FabricatedOverlay
 import tk.zwander.fabricateoverlay.OverlayAPI
@@ -30,11 +31,13 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-        setContentView(R.layout.activity_main)
     }
 
     private fun init() {
+        setContent {
+
+        }
+
         OverlayAPI.getInstance(this) { api ->
             api.unregisterFabricatedOverlay(FabricatedOverlay.generateOverlayIdentifier("ExampleOverlay"))
 

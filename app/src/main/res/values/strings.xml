@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">FabricateOverlay</string>
+
+    <string name="remove_overlay">Remove Overlay</string>
 </resources>
