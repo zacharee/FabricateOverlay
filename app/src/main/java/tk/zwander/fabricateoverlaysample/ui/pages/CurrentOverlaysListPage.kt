@@ -10,10 +10,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import tk.zwander.fabricateoverlay.FabricatedOverlayEntry
 import tk.zwander.fabricateoverlaysample.R
+import tk.zwander.fabricateoverlaysample.ui.elements.ListAvailableResourcesDialog
 
 @Composable
 fun CurrentOverlaysListPage(
-    navController: NavController,
     info: ApplicationInfo
 ) {
     var showingResDialog by remember { mutableStateOf(false) }

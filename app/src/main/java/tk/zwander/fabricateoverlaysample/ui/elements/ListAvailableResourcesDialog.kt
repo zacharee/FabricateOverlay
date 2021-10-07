@@ -1,15 +1,13 @@
-package tk.zwander.fabricateoverlaysample.ui.pages
+package tk.zwander.fabricateoverlaysample.ui.elements
 
 import android.content.pm.ApplicationInfo
 import android.util.TypedValue
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.Dialog
 import net.dongliu.apk.parser.ApkFile
 import tk.zwander.fabricateoverlay.FabricatedOverlayEntry
 import tk.zwander.fabricateoverlaysample.data.AvailableResourceItemData
-import tk.zwander.fabricateoverlaysample.ui.elements.*
 import tk.zwander.fabricateoverlaysample.util.getAppResources
 
 @Composable

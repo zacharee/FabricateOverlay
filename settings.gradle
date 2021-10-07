@@ -6,8 +6,8 @@ pluginManagement {
         maven { url = uri("https://dl.bintray.com/kotlin/kotlin-eap") }
     }
     plugins {
-        id 'com.android.application' version '7.1.0-alpha12'
-        id 'com.android.library' version '7.1.0-alpha12'
+        id 'com.android.application' version '7.1.0-alpha13'
+        id 'com.android.library' version '7.1.0-alpha13'
         id 'org.jetbrains.kotlin.android' version '1.6.0-M1'
     }
 }

@@ -16,6 +16,7 @@ import tk.zwander.fabricateoverlay.OverlayAPI
 import tk.zwander.fabricateoverlay.ShizukuUtils
 import tk.zwander.fabricateoverlaysample.ui.pages.AddOverlayListPage
 import tk.zwander.fabricateoverlaysample.ui.pages.AppListPage
+import tk.zwander.fabricateoverlaysample.ui.pages.CurrentOverlaysListPage
 import tk.zwander.fabricateoverlaysample.ui.pages.HomePage
 
 @SuppressLint("PrivateApi")
@@ -54,17 +55,20 @@ class MainActivity : AppCompatActivity() {
                     AppListPage(navController)
                 }
                 composable(
-                    route = "add_overlay/{appInfo}",
-                    arguments = listOf(navArgument("appInfo") { type = NavType.ParcelableType(ApplicationInfo::class.java) })
+                    route = "add_overlay",
                 ) {
                     AddOverlayListPage(
                         navController,
-                        it.arguments!!.getParcelable("appInfo")!!
+                        navController.previousBackStackEntry?.arguments!!.getParcelable("appInfo")!!
                     )
                 }
                 composable(
-                    route = "current_overlays/{"
-                )
+                    route = "list_overlays"
+                ) {
+                    CurrentOverlaysListPage(
+                        navController.previousBackStackEntry?.arguments!!.getParcelable("appInfo")!!
+                    )
+                }
             }
         }
 

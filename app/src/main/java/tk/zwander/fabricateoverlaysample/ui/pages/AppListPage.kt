@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import tk.zwander.fabricateoverlaysample.ui.elements.AppItem
@@ -26,9 +27,10 @@ fun AppListPage(
     LazyColumn {
         items(apps.size) {
             AppItem(apps[it]) { info ->
-                navController.navigate(
-                    route = "add_overlay_list_page",
+                navController.currentBackStackEntry?.arguments?.putParcelable("appInfo", info)
 
+                navController.navigate(
+                    route = "list_overlays"
                 )
             }
         }
