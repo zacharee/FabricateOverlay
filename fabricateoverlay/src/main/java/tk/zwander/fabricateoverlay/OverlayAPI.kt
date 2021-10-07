@@ -226,6 +226,9 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
         commit(omtInstance)
     }
 
+    /*
+        IOverlayManager.aidl wrapper methods.
+     */
     fun getAllOverlays(userId: Int): Map<String, List<OverlayInfo>> {
         val platformResult = iomClass.getMethod(
             "getAllOverlays",
@@ -266,6 +269,9 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
         return OverlayInfo(platformResult!!)
     }
 
+    /**
+     * @param identifier should be retrieved using [FabricatedOverlay.generateOverlayIdentifier].
+     */
     fun getOverlayInfoByIdentifier(identifier: Any, userId: Int): OverlayInfo {
         val platformResult = iomClass.getMethod(
             "getOverlayInfoByIdentifier",
@@ -379,6 +385,9 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
         )
     }
 
+    /**
+     * @param transaction should be an [android.content.om.OverlayManagerTransaction].
+     */
     fun commit(transaction: Any) {
         iomClass.getMethod(
             "commit",
