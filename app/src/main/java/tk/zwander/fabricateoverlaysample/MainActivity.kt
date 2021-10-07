@@ -1,19 +1,11 @@
 package tk.zwander.fabricateoverlaysample
 
 import android.annotation.SuppressLint
-import android.content.ComponentName
-import android.content.ServiceConnection
-import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.IBinder
-import android.util.Log
 import org.lsposed.hiddenapibypass.HiddenApiBypass
-import rikka.shizuku.Shizuku
-import rikka.shizuku.ShizukuBinderWrapper
 import tk.zwander.fabricateoverlay.FabricatedOverlay
-import tk.zwander.fabricateoverlay.FabricatedOverlayAPI
-import tk.zwander.fabricateoverlay.ShizukuService
+import tk.zwander.fabricateoverlay.OverlayAPI
 import tk.zwander.fabricateoverlay.ShizukuUtils
 
 @SuppressLint("PrivateApi")
@@ -43,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        FabricatedOverlayAPI.getInstance(this) { api ->
+        OverlayAPI.getInstance(this) { api ->
             api.unregisterFabricatedOverlay(FabricatedOverlay.generateOverlayIdentifier("ExampleOverlay"))
 
             val exampleOverlay = FabricatedOverlay(

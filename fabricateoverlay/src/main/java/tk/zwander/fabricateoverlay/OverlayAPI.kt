@@ -10,6 +10,7 @@ import rikka.shizuku.ShizukuBinderWrapper
 
 /**
  * The main API for registering and unregistering fabricated overlays.
+ * There are also some extra overlay management features here.
  *
  * To use this, you must either have Java root/privileged access or
  * Shizuku set up and granted.
@@ -27,7 +28,7 @@ import rikka.shizuku.ShizukuBinderWrapper
  * @param iomService an IBinder instance of [android.content.om.IOverlayManager].
  */
 @SuppressLint("PrivateApi")
-class FabricatedOverlayAPI private constructor(private val iomService: IBinder) {
+class OverlayAPI private constructor(private val iomService: IBinder) {
     companion object {
         /**
          * The current API version. You probably don't need to worry about this.
@@ -46,7 +47,7 @@ class FabricatedOverlayAPI private constructor(private val iomService: IBinder) 
 
                     val service = IShizukuService.Stub.asInterface(binder)
 
-                    instance = FabricatedOverlayAPI(ShizukuBinderWrapper(service.iom))
+                    instance = OverlayAPI(ShizukuBinderWrapper(service.iom))
 
                     callbacks.forEach { callback ->
                         callback(instance!!)
@@ -65,9 +66,9 @@ class FabricatedOverlayAPI private constructor(private val iomService: IBinder) 
         }
 
         /**
-         * Callbacks for getting the [FabricatedOverlayAPI] instance.
+         * Callbacks for getting the [OverlayAPI] instance.
          */
-        private val callbacks = arrayListOf<(FabricatedOverlayAPI) -> Unit>()
+        private val callbacks = arrayListOf<(OverlayAPI) -> Unit>()
 
         /**
          * A thread lock.
@@ -75,10 +76,10 @@ class FabricatedOverlayAPI private constructor(private val iomService: IBinder) 
         private val instanceLock = Any()
 
         /**
-         * The current [FabricatedOverlayAPI] instance.
+         * The current [OverlayAPI] instance.
          */
         @Volatile
-        private var instance: FabricatedOverlayAPI? = null
+        private var instance: OverlayAPI? = null
 
         /**
          * Whether there's been a Shizuku Service bind request.
@@ -87,12 +88,12 @@ class FabricatedOverlayAPI private constructor(private val iomService: IBinder) 
         private var binding = false
 
         /**
-         * Get an instance of [FabricatedOverlayAPI] using Shizuku.
+         * Get an instance of [OverlayAPI] using Shizuku.
          *
          * @param context used to get the app's package name.
-         * @param callback invoked once the [FabricatedOverlayAPI] instance is ready.
+         * @param callback invoked once the [OverlayAPI] instance is ready.
          */
-        fun getInstance(context: Context, callback: (FabricatedOverlayAPI) -> Unit) {
+        fun getInstance(context: Context, callback: (OverlayAPI) -> Unit) {
             synchronized(instanceLock) {
                 if (instance != null) {
                     //If we already have an instance, immediately invoke the callback.
@@ -121,11 +122,11 @@ class FabricatedOverlayAPI private constructor(private val iomService: IBinder) 
         }
 
         /**
-         * Directly get an instance of [FabricatedOverlayAPI] using your own instance
+         * Directly get an instance of [OverlayAPI] using your own instance
          * of [android.content.om.IOverlayManager].
          */
-        fun getInstanceDirect(iOverlayManager: IBinder): FabricatedOverlayAPI {
-            return instance ?: FabricatedOverlayAPI(iOverlayManager).apply {
+        fun getInstanceDirect(iOverlayManager: IBinder): OverlayAPI {
+            return instance ?: OverlayAPI(iOverlayManager).apply {
                 instance = this
             }
         }
@@ -134,7 +135,7 @@ class FabricatedOverlayAPI private constructor(private val iomService: IBinder) 
          * If you've already retrieved an instance before, you can use
          * this to get it without a callback.
          */
-        fun peekInstance(): FabricatedOverlayAPI? {
+        fun peekInstance(): OverlayAPI? {
             return instance
         }
     }
@@ -242,6 +243,169 @@ class FabricatedOverlayAPI private constructor(private val iomService: IBinder) 
         ).invoke(
             iomInstance,
             omtInstance
+        )
+    }
+
+    fun getAllOverlays(userId: Int): Map<String, List<OverlayInfo>> {
+        val platformResult = iomClass.getMethod(
+            "getAllOverlays",
+            Int::class.java
+        ).invoke(
+            iomService,
+            userId
+        ) as Map<*, *>
+
+        return platformResult.map { entry -> entry.key.toString() to (entry.value as List<*>).map { OverlayInfo(it!!) } }.toMap()
+    }
+
+    fun getOverlayInfosForTarget(targetPackageName: String, userId: Int): List<OverlayInfo> {
+        val platformResult = iomClass.getMethod(
+            "getOverlayInfosForTarget",
+            String::class.java,
+            Int::class.java
+        ).invoke(
+            iomService,
+            targetPackageName,
+            userId
+        ) as List<*>
+
+        return platformResult.map { OverlayInfo(it!!) }
+    }
+
+    fun getOverlayInfo(packageName: String, userId: Int): OverlayInfo {
+        val platformResult = iomClass.getMethod(
+            "getOverlayInfo",
+            String::class.java,
+            Int::class.java
+        ).invoke(
+            iomService,
+            packageName,
+            userId
+        )
+
+        return OverlayInfo(platformResult!!)
+    }
+
+    fun getOverlayInfoByIdentifier(identifier: Any, userId: Int): OverlayInfo {
+        val platformResult = iomClass.getMethod(
+            "getOverlayInfoByIdentifier",
+            oiClass,
+            Int::class.java
+        ).invoke(
+            iomService,
+            identifier,
+            userId
+        )
+
+        return OverlayInfo(platformResult!!)
+    }
+
+    fun setEnabled(packageName: String, enable: Boolean, userId: Int): Boolean {
+        return iomClass.getMethod(
+            "setEnabled",
+            String::class.java,
+            Boolean::class.java,
+            Int::class.java
+        ).invoke(
+            iomService,
+            packageName,
+            enable,
+            userId
+        ) as Boolean
+    }
+
+    fun setEnabledExclusive(packageName: String, enable: Boolean, userId: Int): Boolean {
+        return iomClass.getMethod(
+            "setEnabledExclusive",
+            String::class.java,
+            Boolean::class.java,
+            Int::class.java
+        ).invoke(
+            iomService,
+            packageName,
+            enable,
+            userId
+        ) as Boolean
+    }
+
+    fun setEnabledExclusiveInCategory(packageName: String, userId: Int): Boolean {
+        return iomClass.getMethod(
+            "setEnabledExclusiveInCategory",
+            String::class.java,
+            Int::class.java
+        ).invoke(
+            iomService,
+            packageName,
+            userId
+        ) as Boolean
+    }
+
+    fun setPriority(packageName: String, newParentPackageName: String, userId: Int): Boolean {
+        return iomClass.getMethod(
+            "setPriority",
+            String::class.java,
+            String::class.java,
+            Int::class.java
+        ).invoke(
+            iomService,
+            packageName,
+            newParentPackageName,
+            userId
+        ) as Boolean
+    }
+
+    fun setHighestPriority(packageName: String, userId: Int): Boolean {
+        return iomClass.getMethod(
+            "setHighestPriority",
+            String::class.java,
+            Int::class.java
+        ).invoke(
+            iomService,
+            packageName,
+            userId
+        ) as Boolean
+    }
+
+    fun setLowestPriority(packageName: String, userId: Int): Boolean {
+        return iomClass.getMethod(
+            "setLowestPriority",
+            String::class.java,
+            Int::class.java
+        ).invoke(
+            iomService,
+            packageName,
+            userId
+        ) as Boolean
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun getDefaultOverlayPackages(): Array<String> {
+        return iomClass.getMethod(
+            "getDefaultOverlayPackages"
+        ).invoke(
+            iomClass
+        ) as Array<String>
+    }
+
+    fun invalidateCachesForOverlay(packageName: String, userId: Int) {
+        iomClass.getMethod(
+            "invalidateCachesForOverlay",
+            String::class.java,
+            Int::class.java
+        ).invoke(
+            iomService,
+            packageName,
+            userId
+        )
+    }
+
+    fun commit(transaction: Any) {
+        iomClass.getMethod(
+            "commit",
+            omtClass
+        ).invoke(
+            iomService,
+            transaction
         )
     }
 }
