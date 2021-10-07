@@ -100,133 +100,141 @@ fun AddOverlayEntryDialog(
     Dialog(
         onDismissRequest = { onDismiss() }
     ) {
-        Column {
-            Row {
-                Text(resourceName)
+        Surface {
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(resourceName)
 
-                Spacer(Modifier.size(8.dp))
+                    Spacer(Modifier.size(8.dp))
 
-                when (resourceType) {
-                    in listOf(
-                        TypedValue.TYPE_INT_DEC,
-                        TypedValue.TYPE_INT_COLOR_ARGB8
-                    ) -> {
-                        TextField(
-                            value = value,
-                            onValueChange = {
-                                value = it.run {
-                                    if (resourceType == TypedValue.TYPE_INT_COLOR_ARGB8) {
-                                        filterNot { f ->
-                                            f.isDigit() || f in listOf(
-                                                'x',
-                                                'a',
-                                                'b',
-                                                'c',
-                                                'd',
-                                                'e',
-                                                'f'
-                                            )
+                    when (resourceType) {
+                        in listOf(
+                            TypedValue.TYPE_INT_DEC,
+                            TypedValue.TYPE_INT_COLOR_ARGB8
+                        ) -> {
+                            TextField(
+                                value = value,
+                                onValueChange = {
+                                    value = it.run {
+                                        if (resourceType == TypedValue.TYPE_INT_COLOR_ARGB8) {
+                                            filterNot { f ->
+                                                f.isDigit() || f in listOf(
+                                                    'x',
+                                                    'a',
+                                                    'b',
+                                                    'c',
+                                                    'd',
+                                                    'e',
+                                                    'f'
+                                                )
+                                            }
+                                        } else {
+                                            this
                                         }
-                                    } else {
-                                        this
                                     }
-                                }
-                            },
-                            label = {
-                                Text(stringResource(R.string.value))
-                            },
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = when (resourceType) {
-                                    TypedValue.TYPE_INT_DEC -> KeyboardType.Number
-                                    else -> KeyboardType.Text
-                                }
+                                },
+                                label = {
+                                    Text(stringResource(R.string.value))
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = when (resourceType) {
+                                        TypedValue.TYPE_INT_DEC -> KeyboardType.Number
+                                        else -> KeyboardType.Text
+                                    }
+                                )
                             )
-                        )
-                    }
+                        }
 
-                    TypedValue.TYPE_DIMENSION -> {
-                        TextField(
-                            value = value,
-                            onValueChange = {
-                                value = it
-                            },
-                            label = {
-                                Text(stringResource(R.string.value))
-                            },
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number
-                            )
-                        )
+                        TypedValue.TYPE_DIMENSION -> {
+                            Row {
+                                TextField(
+                                    value = value,
+                                    onValueChange = {
+                                        value = it
+                                    },
+                                    label = {
+                                        Text(stringResource(R.string.value))
+                                    },
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Number
+                                    )
+                                )
 
-                        var expanded by remember { mutableStateOf(false) }
-                        valueAppend = "dp"
+                                var expanded by remember { mutableStateOf(false) }
+                                valueAppend = "dp"
 
-                        Box {
-                            Text(
-                                text = valueAppend,
-                                modifier = Modifier.clickable {
-                                    expanded = true
-                                }
-                            )
+                                Box {
+                                    Text(
+                                        text = valueAppend,
+                                        modifier = Modifier.clickable {
+                                            expanded = true
+                                        }.fillMaxHeight().widthIn(48.dp)
+                                    )
 
-                            DropdownMenu(
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false }
-                            ) {
-                                listOf(
-                                    "px",
-                                    "dp",
-                                    "pt",
-                                    "in",
-                                    "mm"
-                                ).forEach { unit ->
-                                    DropdownMenuItem(
-                                        onClick = {
-                                            expanded = false
-                                            valueAppend = unit
-                                        }
+                                    DropdownMenu(
+                                        expanded = expanded,
+                                        onDismissRequest = { expanded = false }
                                     ) {
-                                        Text(unit)
+                                        listOf(
+                                            "px",
+                                            "dp",
+                                            "pt",
+                                            "in",
+                                            "mm"
+                                        ).forEach { unit ->
+                                            DropdownMenuItem(
+                                                onClick = {
+                                                    expanded = false
+                                                    valueAppend = unit
+                                                }
+                                            ) {
+                                                Text(unit)
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
 
-                    TypedValue.TYPE_INT_BOOLEAN -> {
-                        Checkbox(
-                            checked = value == "true",
-                            onCheckedChange = {
-                                value = it.toString()
-                            }
-                        )
-                    }
-                }
-            }
-
-            Row {
-                Button(
-                    onClick = {
-                        onDismiss()
-                    }
-                ) {
-                    Text(stringResource(R.string.cancel))
-                }
-
-                Button(
-                    onClick = {
-                        if (value.isNotBlank()) {
-                            onApply(value, valueAppend)
-                        } else {
-                            Toast.makeText(
-                                context,
-                                context.resources.getString(R.string.please_enter_value),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                        TypedValue.TYPE_INT_BOOLEAN -> {
+                            Checkbox(
+                                checked = value == "true",
+                                onCheckedChange = {
+                                    value = it.toString()
+                                }
+                            )
                         }
                     }
-                ) {
-                    Text(stringResource(R.string.apply))
+                }
+
+                Row {
+                    Button(
+                        onClick = {
+                            onDismiss()
+                        }
+                    ) {
+                        Text(stringResource(R.string.cancel))
+                    }
+
+                    Button(
+                        onClick = {
+                            if (value.isNotBlank()) {
+                                onApply(value, valueAppend)
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    context.resources.getString(R.string.please_enter_value),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    ) {
+                        Text(stringResource(R.string.apply))
+                    }
                 }
             }
         }

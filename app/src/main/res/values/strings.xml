@@ -6,6 +6,8 @@
     <string name="cancel">Cancel</string>
     <string name="value">Value</string>
     <string name="add">Add</string>
+    <string name="save">Save</string>
 
     <string name="please_enter_value">Please enter a value.</string>
+    <string name="overlay_name">Overlay Name.</string>
 </resources>

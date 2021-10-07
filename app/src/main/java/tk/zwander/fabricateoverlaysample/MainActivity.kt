@@ -4,12 +4,15 @@ import android.annotation.SuppressLint
 import android.content.pm.ApplicationInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.activity.compose.setContent
-import androidx.navigation.NavType
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.darkColors
+import androidx.compose.runtime.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import tk.zwander.fabricateoverlay.FabricatedOverlay
 import tk.zwander.fabricateoverlay.OverlayAPI
@@ -45,44 +48,48 @@ class MainActivity : AppCompatActivity() {
 
     private fun init() {
         setContent {
-            val navController = rememberNavController()
+            MaterialTheme(
+                colors = darkColors()
+            ) {
+                Surface {
+                    var appInfoArg by remember {
+                        mutableStateOf<ApplicationInfo?>(null)
+                    }
+                    val navController = rememberNavController()
 
-            NavHost(navController = navController, startDestination = "main") {
-                composable("main") {
-                    HomePage(navController)
-                }
-                composable("app_list") {
-                    AppListPage(navController)
-                }
-                composable(
-                    route = "add_overlay",
-                ) {
-                    AddOverlayListPage(
-                        navController,
-                        navController.previousBackStackEntry?.arguments!!.getParcelable("appInfo")!!
-                    )
-                }
-                composable(
-                    route = "list_overlays"
-                ) {
-                    CurrentOverlaysListPage(
-                        navController.previousBackStackEntry?.arguments!!.getParcelable("appInfo")!!
-                    )
+                    NavHost(navController = navController, startDestination = "main") {
+                        composable("main") {
+                            HomePage(navController)
+                        }
+                        composable("app_list") {
+                            AppListPage(navController)
+                        }
+                        composable(
+                            route = "add_overlay",
+                        ) {
+                            navController.previousBackStackEntry?.arguments?.getParcelable<ApplicationInfo>("appInfo")?.let {
+                                appInfoArg = it
+                            }
+
+                            AddOverlayListPage(
+                                navController,
+                                appInfoArg!!
+                            )
+                        }
+                        composable(
+                            route = "list_overlays"
+                        ) {
+                            navController.previousBackStackEntry?.arguments?.getParcelable<ApplicationInfo>("appInfo")?.let {
+                                appInfoArg = it
+                            }
+
+                            CurrentOverlaysListPage(
+                                appInfoArg!!
+                            )
+                        }
+                    }
                 }
             }
-        }
-
-        OverlayAPI.getInstance(this) { api ->
-            api.unregisterFabricatedOverlay(FabricatedOverlay.generateOverlayIdentifier("ExampleOverlay"))
-
-            val exampleOverlay = FabricatedOverlay(
-                "${packageName}.ExampleOverlay",
-                "com.android.systemui"
-            )
-
-            exampleOverlay.setInteger("quick_settings_num_columns", 3)
-
-            api.registerFabricatedOverlay(exampleOverlay)
         }
     }
 }

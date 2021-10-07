@@ -286,6 +286,22 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
         return OverlayInfo(platformResult!!)
     }
 
+    fun setEnabled(identifier: Any, enable: Boolean, userId: Int) {
+        val omtbInstance = omtbClass.newInstance()
+        omtbClass.getMethod(
+            "setEnabled",
+            oiClass,
+            Boolean::class.java,
+            Int::class.java
+        ).invoke(omtbInstance, identifier, enable, userId)
+
+        val omtInstance = omtbClass.getMethod(
+            "build"
+        ).invoke(omtbInstance)!!
+
+        commit(omtInstance)
+    }
+
     fun setEnabled(packageName: String, enable: Boolean, userId: Int): Boolean {
         return iomClass.getMethod(
             "setEnabled",

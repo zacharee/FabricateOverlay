@@ -30,7 +30,7 @@ fun RegisteredOverlayItem(
 
     fun change() {
         OverlayAPI.getInstance(context) { api ->
-            api.setEnabled(info.packageName, !info.isEnabled, 0)
+            api.setEnabled(FabricatedOverlay.generateOverlayIdentifier(info.overlayName!!, info.packageName), !info.isEnabled, 0)
             onChange()
         }
     }
@@ -54,12 +54,13 @@ fun RegisteredOverlayItem(
                                 info.overlayName!!
                             )
                         )
+                        onChange()
                     }
                 }.align(Alignment.CenterVertically)
             )
 
             Text(
-                text = info.packageName,
+                text = "${info.packageName}:${info.overlayName}",
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
 

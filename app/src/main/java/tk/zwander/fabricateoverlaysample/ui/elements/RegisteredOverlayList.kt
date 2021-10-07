@@ -1,5 +1,6 @@
 package tk.zwander.fabricateoverlaysample.ui.elements
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
@@ -9,6 +10,7 @@ import kotlinx.coroutines.withContext
 import tk.zwander.fabricateoverlay.OverlayAPI
 import tk.zwander.fabricateoverlay.OverlayInfo
 
+@ExperimentalFoundationApi
 @Composable
 fun RegisteredOverlayList() {
     val scope = rememberCoroutineScope()
@@ -33,12 +35,12 @@ fun RegisteredOverlayList() {
 
     LazyColumn {
         registeredOverlays.forEach { (key, value) ->
-            item {
+            stickyHeader {
                 RegisteredOverlayHeaderItem(context.packageManager.run {
                     getApplicationInfo(key, 0).loadLabel(this) }.toString())
             }
 
-            items(value.size) {
+            items(count = value.size) {
                 RegisteredOverlayItem(value[it]) {
                     getOverlays()
                 }

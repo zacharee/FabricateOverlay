@@ -1,6 +1,7 @@
 package tk.zwander.fabricateoverlaysample.util
 
 import android.content.res.Resources
+import android.util.Log
 import android.util.TypedValue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
@@ -35,9 +36,9 @@ fun AbstractApkFile.getResourceTable(): ResourceTable {
 
 suspend fun getAppResources(
     apk: ApkFile
-): List<AvailableResourceItemData> = coroutineScope {
+): Map<String, List<AvailableResourceItemData>> = coroutineScope {
     val table = apk.getResourceTable()
-    val list = TreeSet<AvailableResourceItemData>()
+    val list = TreeMap<String, MutableList<AvailableResourceItemData>>()
 
     table.packageMap.forEach { (k, v) ->
         val (pkgCode, resPkg) = k.toInt() to v
@@ -63,16 +64,16 @@ suspend fun getAppResources(
                     val r = table.getResourcesById(i.toLong())
                     if (r.isEmpty()) continue
 
-                    val paths = r.map { it.resourceEntry }
+                    val t = r[0].type.name
 
-                    paths.forEach {
-                        val typeMask = 0x00ff0000
-                        val typeSpec = resPkg.getTypeSpec(((typeMask and i) - 0xffff).toShort())
-                        val typeName = typeSpec?.name!!
-                        val name = it.key
-
-                        list.add(AvailableResourceItemData(name, type))
+                    if (list[t] == null) {
+                        list[t] = ArrayList()
                     }
+
+                    list[t]!!.add(AvailableResourceItemData(
+                        "${apk.apkMeta.packageName}:${r[0].type.name}/${r[0].resourceEntry.key}",
+                        type
+                    ))
                 } catch (e: Resources.NotFoundException) {
                 }
             }
@@ -95,5 +96,9 @@ suspend fun getAppResources(
         }
     }
 
-    list.toList()
+    list.forEach { (_, v) ->
+        v.sort()
+    }
+
+    list
 }
