@@ -148,6 +148,14 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
     private val omtbClass = Class.forName("android.content.om.OverlayManagerTransaction\$Builder")
     private val oiClass = Class.forName("android.content.om.OverlayIdentifier")
 
+    private val iomInstance = iomsClass.getMethod(
+        "asInterface",
+        IBinder::class.java
+    ).invoke(
+        null,
+        iomService
+    )
+
     /**
      * Register a new [FabricatedOverlay]. The overlay should immediately be available
      * to enable, although it won't be enabled automatically.
@@ -193,23 +201,9 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
         )
 
         val omtInstance = omtbClass.getMethod("build")
-            .invoke(omtbInstance)
+            .invoke(omtbInstance)!!
 
-        val iomInstance = iomsClass.getMethod(
-            "asInterface",
-            IBinder::class.java
-        ).invoke(
-            null,
-            iomService
-        )
-
-        iomClass.getMethod(
-            "commit",
-            omtClass
-        ).invoke(
-            iomInstance,
-            omtInstance
-        )
+        commit(omtInstance)
     }
 
     /**
@@ -227,23 +221,9 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
 
         val omtInstance = omtbClass.getMethod(
             "build"
-        ).invoke(omtbInstance)
+        ).invoke(omtbInstance)!!
 
-        val iomInstance = iomsClass.getMethod(
-            "asInterface",
-            IBinder::class.java
-        ).invoke(
-            null,
-            ShizukuBinderWrapper(iomService)
-        )
-
-        iomClass.getMethod(
-            "commit",
-            omtClass
-        ).invoke(
-            iomInstance,
-            omtInstance
-        )
+        commit(omtInstance)
     }
 
     fun getAllOverlays(userId: Int): Map<String, List<OverlayInfo>> {
@@ -251,7 +231,7 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
             "getAllOverlays",
             Int::class.java
         ).invoke(
-            iomService,
+            iomInstance,
             userId
         ) as Map<*, *>
 
@@ -264,7 +244,7 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
             String::class.java,
             Int::class.java
         ).invoke(
-            iomService,
+            iomInstance,
             targetPackageName,
             userId
         ) as List<*>
@@ -278,7 +258,7 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
             String::class.java,
             Int::class.java
         ).invoke(
-            iomService,
+            iomInstance,
             packageName,
             userId
         )
@@ -292,7 +272,7 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
             oiClass,
             Int::class.java
         ).invoke(
-            iomService,
+            iomInstance,
             identifier,
             userId
         )
@@ -307,7 +287,7 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
             Boolean::class.java,
             Int::class.java
         ).invoke(
-            iomService,
+            iomInstance,
             packageName,
             enable,
             userId
@@ -321,7 +301,7 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
             Boolean::class.java,
             Int::class.java
         ).invoke(
-            iomService,
+            iomInstance,
             packageName,
             enable,
             userId
@@ -334,7 +314,7 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
             String::class.java,
             Int::class.java
         ).invoke(
-            iomService,
+            iomInstance,
             packageName,
             userId
         ) as Boolean
@@ -347,7 +327,7 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
             String::class.java,
             Int::class.java
         ).invoke(
-            iomService,
+            iomInstance,
             packageName,
             newParentPackageName,
             userId
@@ -360,7 +340,7 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
             String::class.java,
             Int::class.java
         ).invoke(
-            iomService,
+            iomInstance,
             packageName,
             userId
         ) as Boolean
@@ -372,7 +352,7 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
             String::class.java,
             Int::class.java
         ).invoke(
-            iomService,
+            iomInstance,
             packageName,
             userId
         ) as Boolean
@@ -383,7 +363,7 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
         return iomClass.getMethod(
             "getDefaultOverlayPackages"
         ).invoke(
-            iomClass
+            iomInstance
         ) as Array<String>
     }
 
@@ -393,7 +373,7 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
             String::class.java,
             Int::class.java
         ).invoke(
-            iomService,
+            iomInstance,
             packageName,
             userId
         )
@@ -404,7 +384,7 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
             "commit",
             omtClass
         ).invoke(
-            iomService,
+            iomInstance,
             transaction
         )
     }
