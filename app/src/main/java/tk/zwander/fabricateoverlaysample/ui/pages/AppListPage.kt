@@ -4,13 +4,14 @@ import android.content.pm.ApplicationInfo
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import tk.zwander.fabricateoverlaysample.ui.elements.AppItem
 
 @Composable
 fun AppListPage(
-    onLaunchMaker: (ApplicationInfo) -> Unit
+    navController: NavController
 ) {
     var apps by remember { mutableStateOf(listOf<ApplicationInfo>()) }
 
@@ -25,7 +26,10 @@ fun AppListPage(
     LazyColumn {
         items(apps.size) {
             AppItem(apps[it]) { info ->
-                onLaunchMaker(info)
+                navController.navigate(
+                    route = "add_overlay_list_page",
+
+                )
             }
         }
     }

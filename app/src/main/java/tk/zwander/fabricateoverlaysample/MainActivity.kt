@@ -1,13 +1,22 @@
 package tk.zwander.fabricateoverlaysample
 
 import android.annotation.SuppressLint
+import android.content.pm.ApplicationInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import tk.zwander.fabricateoverlay.FabricatedOverlay
 import tk.zwander.fabricateoverlay.OverlayAPI
 import tk.zwander.fabricateoverlay.ShizukuUtils
+import tk.zwander.fabricateoverlaysample.ui.pages.AddOverlayListPage
+import tk.zwander.fabricateoverlaysample.ui.pages.AppListPage
+import tk.zwander.fabricateoverlaysample.ui.pages.HomePage
 
 @SuppressLint("PrivateApi")
 class MainActivity : AppCompatActivity() {
@@ -35,7 +44,28 @@ class MainActivity : AppCompatActivity() {
 
     private fun init() {
         setContent {
+            val navController = rememberNavController()
 
+            NavHost(navController = navController, startDestination = "main") {
+                composable("main") {
+                    HomePage(navController)
+                }
+                composable("app_list") {
+                    AppListPage(navController)
+                }
+                composable(
+                    route = "add_overlay/{appInfo}",
+                    arguments = listOf(navArgument("appInfo") { type = NavType.ParcelableType(ApplicationInfo::class.java) })
+                ) {
+                    AddOverlayListPage(
+                        navController,
+                        it.arguments!!.getParcelable("appInfo")!!
+                    )
+                }
+                composable(
+                    route = "current_overlays/{"
+                )
+            }
         }
 
         OverlayAPI.getInstance(this) { api ->

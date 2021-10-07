@@ -2,4 +2,10 @@
     <string name="app_name">FabricateOverlay</string>
 
     <string name="remove_overlay">Remove Overlay</string>
+    <string name="apply">Apply</string>
+    <string name="cancel">Cancel</string>
+    <string name="value">Value</string>
+    <string name="add">Add</string>
+
+    <string name="please_enter_value">Please enter a value.</string>
 </resources>
