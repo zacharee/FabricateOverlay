@@ -72,6 +72,7 @@ fun AddOverlayDimensionEntryDialog(
                 "in" -> TypedValue.COMPLEX_UNIT_IN
                 "pt" -> TypedValue.COMPLEX_UNIT_PT
                 "mm" -> TypedValue.COMPLEX_UNIT_MM
+                "sp" -> TypedValue.COMPLEX_UNIT_SP
                 else -> throw IllegalArgumentException("Invalid dimension $add")
             }
 
@@ -121,7 +122,7 @@ fun AddOverlayEntryDialog(
                                 onValueChange = {
                                     value = it.run {
                                         if (resourceType == TypedValue.TYPE_INT_COLOR_ARGB8) {
-                                            filterNot { f ->
+                                            filter { f ->
                                                 f.isDigit() || f in listOf(
                                                     'x',
                                                     'a',
@@ -165,14 +166,17 @@ fun AddOverlayEntryDialog(
                                 )
 
                                 var expanded by remember { mutableStateOf(false) }
-                                valueAppend = "dp"
+
+                                if (valueAppend.isBlank()) {
+                                    valueAppend = "dp"
+                                }
 
                                 Box {
                                     Text(
                                         text = valueAppend,
                                         modifier = Modifier.clickable {
                                             expanded = true
-                                        }.fillMaxHeight().widthIn(48.dp)
+                                        }.widthIn(48.dp).heightIn(48.dp)
                                     )
 
                                     DropdownMenu(
@@ -184,7 +188,8 @@ fun AddOverlayEntryDialog(
                                             "dp",
                                             "pt",
                                             "in",
-                                            "mm"
+                                            "mm",
+                                            "sp"
                                         ).forEach { unit ->
                                             DropdownMenuItem(
                                                 onClick = {

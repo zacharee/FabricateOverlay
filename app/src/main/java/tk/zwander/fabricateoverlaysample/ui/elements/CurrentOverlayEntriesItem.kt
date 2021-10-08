@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import tk.zwander.fabricateoverlay.FabricatedOverlayEntry
 import tk.zwander.fabricateoverlaysample.R
+import tk.zwander.fabricateoverlaysample.util.TypedValueUtils
 
 @Composable
 fun CurrentOverlayEntriesItem(
@@ -29,7 +30,7 @@ fun CurrentOverlayEntriesItem(
 
             Column {
                 Text(text = info.resourceName)
-                Text(text = info.resourceType.toString())
+                Text(text = TypedValueUtils.typedValueTypeToString(info.resourceType))
                 Text(text = info.resourceValue.toString())
             }
         }
