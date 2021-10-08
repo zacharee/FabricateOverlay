@@ -39,7 +39,8 @@ fun AddOverlayColorEntryDialog(
         onDismiss,
         onApply = { value, _ -> onApply(Integer.parseUnsignedInt(value.substring(2), 16)) },
         resourceName,
-        TypedValue.TYPE_INT_COLOR_ARGB8
+        TypedValue.TYPE_INT_COLOR_ARGB8,
+        "0xaarrggbb"
     )
 }
 
@@ -92,7 +93,8 @@ fun AddOverlayEntryDialog(
     onDismiss: () -> Unit,
     onApply: (String, String) -> Unit,
     resourceName: String,
-    resourceType: Int
+    resourceType: Int,
+    labelExtras: String? = null
 ) {
     var value by remember { mutableStateOf("") }
     var valueAppend by remember { mutableStateOf("") }
@@ -139,7 +141,7 @@ fun AddOverlayEntryDialog(
                                     }
                                 },
                                 label = {
-                                    Text(stringResource(R.string.value))
+                                    Text("${stringResource(R.string.value)}${if (labelExtras != null) " ($labelExtras)" else ""}")
                                 },
                                 keyboardOptions = KeyboardOptions(
                                     keyboardType = when (resourceType) {
@@ -158,7 +160,7 @@ fun AddOverlayEntryDialog(
                                         value = it
                                     },
                                     label = {
-                                        Text(stringResource(R.string.value))
+                                        Text("${stringResource(R.string.value)}${if (labelExtras != null) " ($labelExtras)" else ""}")
                                     },
                                     keyboardOptions = KeyboardOptions(
                                         keyboardType = KeyboardType.Number
