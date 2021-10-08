@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -19,7 +20,9 @@ fun CurrentOverlayEntriesItem(
     info: FabricatedOverlayEntry,
     onRemove: (FabricatedOverlayEntry) -> Unit
 ) {
-    Card {
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Row {
             Image(
                 painter = painterResource(id = R.drawable.ic_baseline_delete_24),

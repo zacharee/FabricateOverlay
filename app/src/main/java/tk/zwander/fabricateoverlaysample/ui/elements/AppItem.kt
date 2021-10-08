@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
@@ -36,11 +37,14 @@ fun AppItem(
                 painter = BitmapPainter(info.icon.toBitmap().asImageBitmap()),
                 contentDescription = null,
                 modifier = Modifier.size(48.dp)
+                    .align(Alignment.CenterVertically)
             )
 
             Spacer(Modifier.size(8.dp))
 
-            Column {
+            Column(
+                modifier = Modifier.align(Alignment.CenterVertically)
+            ) {
                 Text(text = info.label)
 
                 Spacer(Modifier.size(8.dp))
