@@ -1,5 +1,6 @@
 package tk.zwander.fabricateoverlaysample.ui.elements
 
+import android.util.TypedValue
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -31,7 +32,13 @@ fun CurrentOverlayEntriesItem(
             Column {
                 Text(text = info.resourceName)
                 Text(text = TypedValueUtils.typedValueTypeToString(info.resourceType))
-                Text(text = info.resourceValue.toString())
+                Text(text = when (info.resourceType) {
+                    TypedValue.TYPE_INT_DEC -> info.resourceValue.toString()
+                    TypedValue.TYPE_INT_COLOR_ARGB8 -> info.resourceValue.toUInt().toString(16)
+                    TypedValue.TYPE_INT_BOOLEAN -> (info.resourceValue == 1).toString()
+                    TypedValue.TYPE_DIMENSION -> TypedValue.coerceToString(info.resourceType, info.resourceValue)
+                    else -> throw IllegalArgumentException("Invalid type ${info.resourceType}")
+                })
             }
         }
     }
