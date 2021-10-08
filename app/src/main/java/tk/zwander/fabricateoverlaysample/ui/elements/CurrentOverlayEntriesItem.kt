@@ -34,7 +34,7 @@ fun CurrentOverlayEntriesItem(
                 Text(text = TypedValueUtils.typedValueTypeToString(info.resourceType))
                 Text(text = when (info.resourceType) {
                     TypedValue.TYPE_INT_DEC -> info.resourceValue.toString()
-                    TypedValue.TYPE_INT_COLOR_ARGB8 -> info.resourceValue.toUInt().toString(16)
+                    TypedValue.TYPE_INT_COLOR_ARGB8 -> "0x${"%1$08x".format(info.resourceValue)}"
                     TypedValue.TYPE_INT_BOOLEAN -> (info.resourceValue == 1).toString()
                     TypedValue.TYPE_DIMENSION -> TypedValue.coerceToString(info.resourceType, info.resourceValue)
                     else -> throw IllegalArgumentException("Invalid type ${info.resourceType}")
