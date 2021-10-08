@@ -21,6 +21,7 @@ import tk.zwander.fabricateoverlaysample.ui.elements.ListAvailableResourcesDialo
 
 @Composable
 fun CurrentOverlaysListPage(
+    navController: NavController,
     info: ApplicationInfo
 ) {
     var showingResDialog by remember { mutableStateOf(false) }
@@ -89,15 +90,18 @@ fun CurrentOverlaysListPage(
                         onClick = {
                             OverlayAPI.getInstance(context) { api ->
                                 api.registerFabricatedOverlay(FabricatedOverlay(
-                                    "${context.packageName}.${name}",
+                                    "${context.packageName}.${info.packageName}.${name}",
                                     info.packageName
                                 ).apply {
                                     overlays.forEach { overlay ->
                                         entries[overlay.resourceName] = overlay
                                     }
                                 })
+
+                                showingSaveDialog = false
+
+                                navController.popBackStack("main", false)
                             }
-                            showingSaveDialog = false
                         }
                     ) {
                         Text(stringResource(id = R.string.save))

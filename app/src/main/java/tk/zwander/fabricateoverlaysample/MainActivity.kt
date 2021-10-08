@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity() {
                             }
 
                             CurrentOverlaysListPage(
+                                navController,
                                 appInfoArg!!
                             )
                         }
