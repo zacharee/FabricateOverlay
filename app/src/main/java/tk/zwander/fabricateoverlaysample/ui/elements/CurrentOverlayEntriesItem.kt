@@ -24,7 +24,9 @@ fun CurrentOverlayEntriesItem(
         modifier = Modifier.fillMaxWidth()
             .padding(4.dp)
     ) {
-        Row {
+        Row(
+            modifier = Modifier.padding(8.dp)
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_baseline_delete_24),
                 contentDescription = null,
