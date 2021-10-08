@@ -37,7 +37,7 @@ fun AddOverlayColorEntryDialog(
 ) {
     AddOverlayEntryDialog(
         onDismiss,
-        onApply = { value, _ -> onApply(value.toInt()) },
+        onApply = { value, _ -> onApply(value.substring(2).toInt(16)) },
         resourceName,
         TypedValue.TYPE_INT_COLOR_ARGB8
     )

@@ -2,14 +2,9 @@ package tk.zwander.fabricateoverlaysample.ui.elements
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.material.Card
-import androidx.compose.material.Checkbox
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,42 +22,53 @@ fun RegisteredOverlayItem(
     onChange: () -> Unit
 ) {
     val context = LocalContext.current
+    var showingRemoveDialog by remember { mutableStateOf(false) }
 
     fun change() {
         OverlayAPI.getInstance(context) { api ->
-            api.setEnabled(FabricatedOverlay.generateOverlayIdentifier(info.overlayName!!, info.packageName), !info.isEnabled, 0)
+            api.setEnabled(
+                FabricatedOverlay.generateOverlayIdentifier(
+                    info.overlayName!!,
+                    info.packageName
+                ), !info.isEnabled, 0
+            )
             onChange()
         }
     }
 
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .heightIn(min = 48.dp)
     ) {
         Row(
-            modifier = Modifier.clickable {
-                change()
-            }.fillMaxSize()
+            modifier = Modifier
+                .clickable {
+                    change()
+                }
+                .fillMaxSize()
+                .padding(8.dp)
         ) {
             Image(
                 painter = painterResource(R.drawable.ic_baseline_delete_24),
                 contentDescription = stringResource(R.string.remove_overlay),
-                modifier = Modifier.clickable {
-                    OverlayAPI.getInstance(context) { api ->
-                        api.unregisterFabricatedOverlay(
-                            FabricatedOverlay.generateOverlayIdentifier(
-                                info.overlayName!!
-                            )
-                        )
-                        onChange()
+                modifier = Modifier
+                    .clickable {
+                        showingRemoveDialog = true
                     }
-                }.align(Alignment.CenterVertically)
+                    .align(Alignment.CenterVertically)
             )
+
+            Spacer(Modifier.size(8.dp))
 
             Text(
                 text = "${info.packageName}:${info.overlayName}",
-                modifier = Modifier.align(Alignment.CenterVertically)
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .weight(1f)
             )
+
+            Spacer(Modifier.size(8.dp))
 
             Checkbox(
                 checked = info.isEnabled,
@@ -72,5 +78,41 @@ fun RegisteredOverlayItem(
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
         }
+    }
+
+    if (showingRemoveDialog) {
+        AlertDialog(
+            onDismissRequest = { showingRemoveDialog = false },
+            buttons = {
+                Row {
+                    Button(
+                        onClick = {
+                            showingRemoveDialog = false
+                        }
+                    ) {
+                        Text(stringResource(id = R.string.no))
+                    }
+
+                    Button(
+                        onClick = {
+                            OverlayAPI.getInstance(context) { api ->
+                                api.unregisterFabricatedOverlay(
+                                    FabricatedOverlay.generateOverlayIdentifier(
+                                        info.overlayName!!
+                                    )
+                                )
+                                showingRemoveDialog = false
+                                onChange()
+                            }
+                        }
+                    ) {
+                        Text(stringResource(id = R.string.yes))
+                    }
+                }
+            },
+            text = {
+                Text(stringResource(id = R.string.delete_confirmation))
+            }
+        )
     }
 }
