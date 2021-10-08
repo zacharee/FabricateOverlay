@@ -3,19 +3,19 @@ package tk.zwander.fabricateoverlaysample.ui.elements
 import android.content.pm.ApplicationInfo
 import android.util.TypedValue
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import net.dongliu.apk.parser.ApkFile
 import tk.zwander.fabricateoverlay.FabricatedOverlayEntry
@@ -40,31 +40,42 @@ fun ListAvailableResourcesDialog(
     ) {
         Surface {
             LaunchedEffect("resources") {
-                async {
+                async(Dispatchers.IO) {
                     resources = getAppResources(context, ApkFile(info.sourceDir))
                 }
             }
 
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                resources.forEach { (k, v) ->
-                    stickyHeader {
-                        Surface {
-                            Text(
-                                text = k,
-                                modifier = Modifier.heightIn(min = 32.dp)
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                                fontSize = 18.sp
-                            )
+            if (resources.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    resources.forEach { (k, v) ->
+                        stickyHeader {
+                            Surface {
+                                Text(
+                                    text = k,
+                                    modifier = Modifier
+                                        .heightIn(min = 32.dp)
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                    fontSize = 18.sp
+                                )
+                            }
                         }
-                    }
 
-                    items(v.size) {
-                        AvailableResourceItem(v[it]) { data ->
-                            resData = data
-                            showingResDialog = true
+                        items(v.size) {
+                            AvailableResourceItem(v[it]) { data ->
+                                resData = data
+                                showingResDialog = true
+                            }
                         }
                     }
                 }
