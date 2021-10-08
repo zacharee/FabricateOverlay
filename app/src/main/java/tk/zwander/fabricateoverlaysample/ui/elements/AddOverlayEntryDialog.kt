@@ -209,6 +209,10 @@ fun AddOverlayEntryDialog(
                 }
 
                 TypedValue.TYPE_INT_BOOLEAN -> {
+                    if (value.isBlank()) {
+                        value = "false"
+                    }
+
                     Box(
                         modifier = Modifier.fillMaxWidth()
                     ) {
