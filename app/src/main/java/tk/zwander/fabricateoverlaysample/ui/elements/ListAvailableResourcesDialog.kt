@@ -12,9 +12,11 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import kotlinx.coroutines.async
 import net.dongliu.apk.parser.ApkFile
 import tk.zwander.fabricateoverlay.FabricatedOverlayEntry
 import tk.zwander.fabricateoverlaysample.data.AvailableResourceItemData
@@ -31,12 +33,16 @@ fun ListAvailableResourcesDialog(
     var resData by remember { mutableStateOf<AvailableResourceItemData?>(null) }
     var resources by remember { mutableStateOf(mapOf<String, List<AvailableResourceItemData>>()) }
 
+    val context = LocalContext.current
+
     Dialog(
         onDismissRequest = onDismiss
     ) {
         Surface {
             LaunchedEffect("resources") {
-                resources = getAppResources(ApkFile(info.sourceDir))
+                async {
+                    resources = getAppResources(context, ApkFile(info.sourceDir))
+                }
             }
 
             LazyColumn(

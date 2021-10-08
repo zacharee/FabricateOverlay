@@ -1,7 +1,8 @@
 package tk.zwander.fabricateoverlaysample.util
 
+import android.content.Context
 import android.content.res.Resources
-import android.util.Log
+import android.content.res.Resources.NotFoundException
 import android.util.TypedValue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
@@ -12,10 +13,11 @@ import net.dongliu.apk.parser.struct.AndroidConstants
 import net.dongliu.apk.parser.struct.resource.ResourcePackage
 import net.dongliu.apk.parser.struct.resource.ResourceTable
 import tk.zwander.fabricateoverlaysample.data.AvailableResourceItemData
-import tk.zwander.fabricateoverlaysample.data.ResourceItemData
 import java.nio.ByteBuffer
 import java.util.*
+import java.util.regex.Pattern
 import kotlin.collections.ArrayList
+
 
 @Suppress("UNCHECKED_CAST")
 val ResourceTable.packageMap: Map<Short, ResourcePackage>
@@ -35,6 +37,7 @@ fun AbstractApkFile.getResourceTable(): ResourceTable {
 }
 
 suspend fun getAppResources(
+    context: Context,
     apk: ApkFile
 ): Map<String, List<AvailableResourceItemData>> = coroutineScope {
     val table = apk.getResourceTable()
@@ -70,11 +73,14 @@ suspend fun getAppResources(
                         list[t] = ArrayList()
                     }
 
+                    val fqrn = "${apk.apkMeta.packageName}:${r[0].type.name}/${r[0].resourceEntry.key}"
+
                     list[t]!!.add(AvailableResourceItemData(
-                        "${apk.apkMeta.packageName}:${r[0].type.name}/${r[0].resourceEntry.key}",
-                        type
+                        fqrn,
+                        type,
+                        context.getCurrentResourceValue(apk.apkMeta.packageName, fqrn)
                     ))
-                } catch (e: Resources.NotFoundException) {
+                } catch (e: NotFoundException) {
                 }
             }
         }
@@ -101,4 +107,51 @@ suspend fun getAppResources(
     }
 
     list
+}
+
+fun Context.getCurrentResourceValue(packageName: String, fqrn: String): Array<String> {
+    val res = packageManager.getResourcesForApplication(packageName)
+
+    try {
+        val value = TypedValue()
+        res.getValue(fqrn, value, false /* resolveRefs */)
+        val valueString = value.coerceToString()
+        res.getValue(fqrn, value, true /* resolveRefs */)
+        val resolvedString = value.coerceToString()
+
+        return arrayOf(
+            if (valueString == resolvedString) {
+                resolvedString.toString()
+            } else {
+                "$valueString -> $resolvedString"
+            }
+        )
+    } catch (e: NotFoundException) {}
+
+    return try {
+        val regex = Pattern.compile("(.*?):(.*?)/(.*?)");
+        val matcher = regex.matcher(fqrn);
+
+        val pkg = matcher.group(1)
+        val type = matcher.group(2)
+        val name = matcher.group(3)
+        val resid = res.getIdentifier(name, type, pkg)
+        if (resid == 0) {
+            throw NotFoundException()
+        }
+        val array = res.obtainTypedArray(resid)
+        val tv = TypedValue()
+
+        val items = ArrayList<String>(array.length())
+
+        for (i in 0 until array.length()) {
+            array.getValue(i, tv)
+            items.add(tv.coerceToString().toString())
+        }
+        array.recycle()
+
+        items.toTypedArray()
+    } catch (e: NotFoundException) {
+        throw IllegalStateException("Unable to retrieve resource.")
+    }
 }
