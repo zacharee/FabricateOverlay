@@ -3,15 +3,14 @@ package tk.zwander.fabricateoverlaysample.ui.elements
 import android.util.TypedValue
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import tk.zwander.fabricateoverlay.FabricatedOverlayEntry
 import tk.zwander.fabricateoverlaysample.R
 import tk.zwander.fabricateoverlaysample.util.TypedValueUtils
@@ -32,6 +31,8 @@ fun CurrentOverlayEntriesItem(
                     onRemove(info)
                 }.align(Alignment.CenterVertically)
             )
+
+            Spacer(Modifier.size(8.dp))
 
             Column(
                 modifier = Modifier.align(Alignment.CenterVertically)
