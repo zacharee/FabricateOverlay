@@ -24,8 +24,9 @@ fun RegisteredOverlayList() {
                     api.getAllOverlays(0).mapNotNull { (key, value) ->
                         val filtered = value.filter { item -> item.isFabricated && item.overlayName?.contains(context.packageName) == true }
 
-                        if (filtered.isEmpty()) null else (key to filtered)
-                    }.toMap()
+                        if (filtered.isEmpty()) null else (context.packageManager.run {
+                            getApplicationInfo(key, 0).loadLabel(this) }.toString() to filtered)
+                    }.toMap().toSortedMap { o1, o2 -> o1.compareTo(o2, true) }
                 }
             }
         }
@@ -35,13 +36,14 @@ fun RegisteredOverlayList() {
 
     LazyColumn {
         registeredOverlays.forEach { (key, value) ->
+            val sorted = value.sortedBy { info -> "${info.packageName}:${info.overlayName}" }
+
             stickyHeader {
-                RegisteredOverlayHeaderItem(context.packageManager.run {
-                    getApplicationInfo(key, 0).loadLabel(this) }.toString())
+                RegisteredOverlayHeaderItem(key)
             }
 
-            items(count = value.size) {
-                RegisteredOverlayItem(value[it]) {
+            items(count = sorted.size) {
+                RegisteredOverlayItem(sorted[it]) {
                     getOverlays()
                 }
             }
