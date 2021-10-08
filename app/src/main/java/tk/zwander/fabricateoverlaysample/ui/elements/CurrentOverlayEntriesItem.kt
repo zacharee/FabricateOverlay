@@ -22,6 +22,7 @@ fun CurrentOverlayEntriesItem(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth()
+            .padding(4.dp)
     ) {
         Row {
             Image(

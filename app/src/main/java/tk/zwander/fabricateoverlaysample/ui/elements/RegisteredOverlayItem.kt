@@ -40,6 +40,7 @@ fun RegisteredOverlayItem(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = 48.dp)
+            .padding(4.dp)
     ) {
         Row(
             modifier = Modifier
