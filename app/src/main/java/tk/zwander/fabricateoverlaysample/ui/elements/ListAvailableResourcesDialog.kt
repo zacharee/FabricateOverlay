@@ -1,17 +1,17 @@
 package tk.zwander.fabricateoverlaysample.ui.elements
 
 import android.content.pm.ApplicationInfo
+import android.util.Log
 import android.util.TypedValue
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import net.dongliu.apk.parser.ApkFile
 import tk.zwander.fabricateoverlay.FabricatedOverlayEntry
+import tk.zwander.fabricateoverlaysample.R
 import tk.zwander.fabricateoverlaysample.data.AvailableResourceItemData
 import tk.zwander.fabricateoverlaysample.util.getAppResources
 
@@ -39,44 +40,67 @@ fun ListAvailableResourcesDialog(
         onDismissRequest = onDismiss
     ) {
         Surface {
-            LaunchedEffect("resources") {
-                async(Dispatchers.IO) {
-                    resources = getAppResources(context, ApkFile(info.sourceDir))
-                }
-            }
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text(
+                    text = stringResource(id = R.string.resources),
+                    modifier = Modifier.padding(8.dp),
+                    fontSize = 18.sp
+                )
 
-            if (resources.isEmpty()) {
-                Box(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
-                    )
+                Spacer(Modifier.size(8.dp))
+
+                LaunchedEffect("resources") {
+                    async(Dispatchers.IO) {
+                        resources = getAppResources(context, ApkFile(info.sourceDir))
+                    }
                 }
-            } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    resources.forEach { (k, v) ->
-                        stickyHeader {
-                            Surface {
-                                Text(
-                                    text = k,
-                                    modifier = Modifier
-                                        .heightIn(min = 32.dp)
-                                        .fillMaxWidth()
-                                        .padding(8.dp),
-                                    fontSize = 18.sp
-                                )
+
+                if (resources.isEmpty()) {
+                    Box(
+                        modifier = Modifier.weight(1f)
+                            .fillMaxWidth()
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        resources.forEach { (k, v) ->
+                            stickyHeader {
+                                Surface {
+                                    Text(
+                                        text = k,
+                                        modifier = Modifier
+                                            .heightIn(min = 32.dp)
+                                            .fillMaxWidth()
+                                            .padding(8.dp),
+                                        fontSize = 18.sp
+                                    )
+                                }
+                            }
+
+                            items(v.size) {
+                                AvailableResourceItem(v[it]) { data ->
+                                    resData = data
+                                    showingResDialog = true
+                                }
                             }
                         }
+                    }
+                }
 
-                        items(v.size) {
-                            AvailableResourceItem(v[it]) { data ->
-                                resData = data
-                                showingResDialog = true
-                            }
-                        }
+                Spacer(Modifier.size(8.dp))
+
+                Row {
+                    Button(
+                        onClick = onDismiss
+                    ) {
+                        Text(stringResource(id = R.string.cancel))
                     }
                 }
             }

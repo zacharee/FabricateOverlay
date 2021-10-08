@@ -3,6 +3,7 @@ package tk.zwander.fabricateoverlaysample.util
 import android.content.Context
 import android.content.res.Resources
 import android.content.res.Resources.NotFoundException
+import android.util.Log
 import android.util.TypedValue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
@@ -129,12 +130,11 @@ fun Context.getCurrentResourceValue(packageName: String, fqrn: String): Array<St
     } catch (e: NotFoundException) {}
 
     return try {
-        val regex = Pattern.compile("(.*?):(.*?)/(.*?)");
-        val matcher = regex.matcher(fqrn);
+        val split = fqrn.split(":", "/")
 
-        val pkg = matcher.group(1)
-        val type = matcher.group(2)
-        val name = matcher.group(3)
+        val pkg = split[0]
+        val type = split[1]
+        val name = split[2]
         val resid = res.getIdentifier(name, type, pkg)
         if (resid == 0) {
             throw NotFoundException()
@@ -152,6 +152,6 @@ fun Context.getCurrentResourceValue(packageName: String, fqrn: String): Array<St
 
         items.toTypedArray()
     } catch (e: NotFoundException) {
-        throw IllegalStateException("Unable to retrieve resource.")
+        arrayOf()
     }
 }

@@ -5,10 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Button
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -68,46 +65,45 @@ fun CurrentOverlaysListPage(
     }
 
     if (showingSaveDialog) {
-        Dialog(onDismissRequest = { showingSaveDialog = false }) {
-            var name by remember { mutableStateOf("") }
+        var name by remember { mutableStateOf("") }
 
-            Surface {
-                Column(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    TextField(
-                        value = name,
-                        onValueChange = { name = it },
-                        label = { Text(stringResource(id = R.string.overlay_name)) }
-                    )
+        AlertDialog(
+            onDismissRequest = { showingSaveDialog = false },
+            title = { Text(stringResource(id = R.string.save)) },
+            text = {
+                TextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text(stringResource(id = R.string.overlay_name)) }
+                )
+            },
+            buttons = {
+                Row {
+                    Button(
+                        onClick = { showingSaveDialog = false }
+                    ) {
+                        Text(stringResource(id = R.string.cancel))
+                    }
 
-                    Row {
-                        Button(
-                            onClick = { showingSaveDialog = false }
-                        ) {
-                            Text(stringResource(id = R.string.cancel))
-                        }
-
-                        Button(
-                            onClick = {
-                                OverlayAPI.getInstance(context) { api ->
-                                    api.registerFabricatedOverlay(FabricatedOverlay(
-                                        "${context.packageName}.${name}",
-                                        info.packageName
-                                    ).apply {
-                                        overlays.forEach { overlay ->
-                                            entries[overlay.resourceName] = overlay
-                                        }
-                                    })
-                                }
-                                showingSaveDialog = false
+                    Button(
+                        onClick = {
+                            OverlayAPI.getInstance(context) { api ->
+                                api.registerFabricatedOverlay(FabricatedOverlay(
+                                    "${context.packageName}.${name}",
+                                    info.packageName
+                                ).apply {
+                                    overlays.forEach { overlay ->
+                                        entries[overlay.resourceName] = overlay
+                                    }
+                                })
                             }
-                        ) {
-                            Text(stringResource(id = R.string.save))
+                            showingSaveDialog = false
                         }
+                    ) {
+                        Text(stringResource(id = R.string.save))
                     }
                 }
             }
-        }
+        )
     }
 }

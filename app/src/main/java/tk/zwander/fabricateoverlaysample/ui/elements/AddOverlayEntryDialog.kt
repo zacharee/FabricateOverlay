@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -100,150 +101,165 @@ fun AddOverlayEntryDialog(
     var valueAppend by remember { mutableStateOf("") }
     val context = LocalContext.current
 
-    Dialog(
-        onDismissRequest = { onDismiss() }
-    ) {
-        Surface {
-            Column(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(resourceName)
-
-                    Spacer(Modifier.size(8.dp))
-
-                    when (resourceType) {
-                        in listOf(
-                            TypedValue.TYPE_INT_DEC,
-                            TypedValue.TYPE_INT_COLOR_ARGB8
-                        ) -> {
-                            TextField(
-                                value = value,
-                                onValueChange = {
-                                    value = it.run {
-                                        if (resourceType == TypedValue.TYPE_INT_COLOR_ARGB8) {
-                                            filter { f ->
-                                                f.isDigit() || f in listOf(
-                                                    'x',
-                                                    'a',
-                                                    'b',
-                                                    'c',
-                                                    'd',
-                                                    'e',
-                                                    'f'
-                                                )
-                                            }
-                                        } else {
-                                            this
-                                        }
+    AlertDialog(
+        onDismissRequest = { onDismiss() },
+        title = {
+            Text(resourceName)
+        },
+        text = {
+            when (resourceType) {
+                in listOf(
+                    TypedValue.TYPE_INT_DEC,
+                    TypedValue.TYPE_INT_COLOR_ARGB8
+                ) -> {
+                    TextField(
+                        value = value,
+                        onValueChange = {
+                            value = it.run {
+                                if (resourceType == TypedValue.TYPE_INT_COLOR_ARGB8) {
+                                    filter { f ->
+                                        f.isDigit() || f in listOf(
+                                            'x',
+                                            'a',
+                                            'b',
+                                            'c',
+                                            'd',
+                                            'e',
+                                            'f'
+                                        )
                                     }
-                                },
-                                label = {
-                                    Text("${stringResource(R.string.value)}${if (labelExtras != null) " ($labelExtras)" else ""}")
-                                },
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = when (resourceType) {
-                                        TypedValue.TYPE_INT_DEC -> KeyboardType.Number
-                                        else -> KeyboardType.Text
-                                    }
-                                )
-                            )
+                                } else {
+                                    this
+                                }
+                            }
+                        },
+                        label = {
+                            Text("${stringResource(R.string.value)}${if (labelExtras != null) " ($labelExtras)" else ""}")
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = when (resourceType) {
+                                TypedValue.TYPE_INT_DEC -> KeyboardType.Number
+                                else -> KeyboardType.Text
+                            }
+                        )
+                    )
+                }
+
+                TypedValue.TYPE_DIMENSION -> {
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        TextField(
+                            value = value,
+                            onValueChange = {
+                                value = it
+                            },
+                            label = {
+                                Text("${stringResource(R.string.value)}${if (labelExtras != null) " ($labelExtras)" else ""}")
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
+                            ),
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        var expanded by remember { mutableStateOf(false) }
+
+                        if (valueAppend.isBlank()) {
+                            valueAppend = "dp"
                         }
 
-                        TypedValue.TYPE_DIMENSION -> {
-                            Row {
-                                TextField(
-                                    value = value,
-                                    onValueChange = {
-                                        value = it
-                                    },
-                                    label = {
-                                        Text("${stringResource(R.string.value)}${if (labelExtras != null) " ($labelExtras)" else ""}")
-                                    },
-                                    keyboardOptions = KeyboardOptions(
-                                        keyboardType = KeyboardType.Number
-                                    )
-                                )
+                        Spacer(Modifier.size(8.dp))
 
-                                var expanded by remember { mutableStateOf(false) }
+                        Box {
+                            Text(
+                                text = valueAppend,
+                                modifier = Modifier
+                                    .clickable {
+                                        expanded = true
+                                    }
+                                    .widthIn(min = 48.dp)
+                                    .heightIn(min = 48.dp)
+                            )
 
-                                if (valueAppend.isBlank()) {
-                                    valueAppend = "dp"
-                                }
-
-                                Box {
-                                    Text(
-                                        text = valueAppend,
-                                        modifier = Modifier.clickable {
-                                            expanded = true
-                                        }.widthIn(48.dp).heightIn(48.dp)
-                                    )
-
-                                    DropdownMenu(
-                                        expanded = expanded,
-                                        onDismissRequest = { expanded = false }
-                                    ) {
-                                        listOf(
-                                            "px",
-                                            "dp",
-                                            "pt",
-                                            "in",
-                                            "mm",
-                                            "sp"
-                                        ).forEach { unit ->
-                                            DropdownMenuItem(
-                                                onClick = {
-                                                    expanded = false
-                                                    valueAppend = unit
-                                                }
-                                            ) {
-                                                Text(unit)
-                                            }
+                            DropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false }
+                            ) {
+                                listOf(
+                                    "px",
+                                    "dp",
+                                    "pt",
+                                    "in",
+                                    "mm",
+                                    "sp"
+                                ).forEach { unit ->
+                                    DropdownMenuItem(
+                                        onClick = {
+                                            expanded = false
+                                            valueAppend = unit
                                         }
+                                    ) {
+                                        Text(unit)
                                     }
                                 }
                             }
                         }
+                    }
+                }
 
-                        TypedValue.TYPE_INT_BOOLEAN -> {
+                TypedValue.TYPE_INT_BOOLEAN -> {
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Row(
+                            modifier = Modifier.align(Alignment.Center)
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.enabled),
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            )
+
+                            Spacer(Modifier.weight(1f))
+
                             Checkbox(
                                 checked = value == "true",
                                 onCheckedChange = {
                                     value = it.toString()
-                                }
+                                },
+                                modifier = Modifier.align(Alignment.CenterVertically)
                             )
                         }
                     }
                 }
-
-                Row {
-                    Button(
-                        onClick = {
-                            onDismiss()
-                        }
-                    ) {
-                        Text(stringResource(R.string.cancel))
+            }
+        },
+        buttons = {
+            Row {
+                Button(
+                    onClick = {
+                        onDismiss()
                     }
+                ) {
+                    Text(stringResource(R.string.cancel))
+                }
 
-                    Button(
-                        onClick = {
-                            if (value.isNotBlank()) {
-                                onApply(value, valueAppend)
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    context.resources.getString(R.string.please_enter_value),
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
+                Button(
+                    onClick = {
+                        if (value.isNotBlank()) {
+                            onApply(value, valueAppend)
+                        } else {
+                            Toast.makeText(
+                                context,
+                                context.resources.getString(R.string.please_enter_value),
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                    ) {
-                        Text(stringResource(R.string.apply))
                     }
+                ) {
+                    Text(stringResource(R.string.apply))
                 }
             }
         }
-    }
+    )
 }
