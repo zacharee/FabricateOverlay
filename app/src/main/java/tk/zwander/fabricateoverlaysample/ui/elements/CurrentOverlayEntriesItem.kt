@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import tk.zwander.fabricateoverlay.FabricatedOverlayEntry
@@ -29,10 +30,12 @@ fun CurrentOverlayEntriesItem(
                 contentDescription = null,
                 modifier = Modifier.clickable {
                     onRemove(info)
-                }
+                }.align(Alignment.CenterVertically)
             )
 
-            Column {
+            Column(
+                modifier = Modifier.align(Alignment.CenterVertically)
+            ) {
                 Text(text = info.resourceName)
                 Text(text = TypedValueUtils.typedValueTypeToString(info.resourceType))
                 Text(text = when (info.resourceType) {
