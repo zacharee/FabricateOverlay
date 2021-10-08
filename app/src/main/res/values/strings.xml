@@ -11,6 +11,7 @@
     <string name="no">No</string>
     <string name="resources">Resources</string>
     <string name="enabled">Enabled</string>
+    <string name="search">Search</string>
 
     <string name="please_enter_value">Please enter a value.</string>
     <string name="overlay_name">Overlay Name.</string>

@@ -33,6 +33,7 @@ fun ListAvailableResourcesDialog(
     var showingResDialog by remember { mutableStateOf(false) }
     var resData by remember { mutableStateOf<AvailableResourceItemData?>(null) }
     var resources by remember { mutableStateOf(mapOf<String, List<AvailableResourceItemData>>()) }
+    var filter by remember { mutableStateOf("") }
 
     val context = LocalContext.current
 
@@ -51,6 +52,20 @@ fun ListAvailableResourcesDialog(
 
                 Spacer(Modifier.size(8.dp))
 
+                TextField(
+                    value = filter,
+                    onValueChange = {
+                        filter = it
+                    },
+                    label = {
+                        Text(stringResource(id = R.string.search))
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(8.dp)
+                )
+
+                Spacer(Modifier.size(8.dp))
+
                 LaunchedEffect("resources") {
                     async(Dispatchers.IO) {
                         resources = getAppResources(context, ApkFile(info.sourceDir))
@@ -59,7 +74,8 @@ fun ListAvailableResourcesDialog(
 
                 if (resources.isEmpty()) {
                     Box(
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .weight(1f)
                             .fillMaxWidth()
                     ) {
                         CircularProgressIndicator(
@@ -85,9 +101,13 @@ fun ListAvailableResourcesDialog(
                             }
 
                             items(v.size) {
-                                AvailableResourceItem(v[it]) { data ->
-                                    resData = data
-                                    showingResDialog = true
+                                val item = v[it]
+
+                                if (item.name.contains(filter, true)) {
+                                    AvailableResourceItem(item) { data ->
+                                        resData = data
+                                        showingResDialog = true
+                                    }
                                 }
                             }
                         }

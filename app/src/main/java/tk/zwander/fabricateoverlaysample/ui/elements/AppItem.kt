@@ -19,14 +19,17 @@ fun AppItem(
     onClick: (LoadedApplicationInfo) -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .heightIn(min = 48.dp)
             .padding(4.dp)
     ) {
         Row(
-            modifier = Modifier.clickable {
-                onClick(info)
-            }.fillMaxSize()
+            modifier = Modifier
+                .clickable {
+                    onClick(info)
+                }
+                .fillMaxSize()
                 .padding(8.dp)
         ) {
             Image(
@@ -37,7 +40,13 @@ fun AppItem(
 
             Spacer(Modifier.size(8.dp))
 
-            Text(text = info.label)
+            Column {
+                Text(text = info.label)
+
+                Spacer(Modifier.size(8.dp))
+
+                Text(text = info.info.packageName)
+            }
         }
     }
 }
