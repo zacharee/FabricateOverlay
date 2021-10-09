@@ -3,6 +3,7 @@ package tk.zwander.fabricateoverlaysample.ui.elements
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -12,7 +13,9 @@ import tk.zwander.fabricateoverlay.OverlayInfo
 
 @ExperimentalFoundationApi
 @Composable
-fun RegisteredOverlayList() {
+fun RegisteredOverlayList(
+    modifier: Modifier = Modifier
+) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     var registeredOverlays by remember { mutableStateOf(mapOf<String, List<OverlayInfo>>()) }
@@ -34,7 +37,9 @@ fun RegisteredOverlayList() {
 
     getOverlays()
 
-    LazyColumn {
+    LazyColumn(
+        modifier = modifier
+    ) {
         registeredOverlays.forEach { (key, value) ->
             val sorted = value.sortedBy { info -> "${info.packageName}:${info.overlayName}" }
 

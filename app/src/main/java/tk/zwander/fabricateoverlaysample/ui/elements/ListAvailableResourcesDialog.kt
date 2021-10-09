@@ -12,6 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -46,8 +48,12 @@ fun ListAvailableResourcesDialog(
             ) {
                 Text(
                     text = stringResource(id = R.string.resources),
-                    modifier = Modifier.padding(8.dp),
-                    fontSize = 18.sp
+                    modifier = Modifier.padding(
+                        top = 16.dp,
+                        start = 8.dp
+                    ).fillMaxWidth(),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
                 )
 
                 Spacer(Modifier.size(8.dp))
@@ -61,10 +67,12 @@ fun ListAvailableResourcesDialog(
                         Text(stringResource(id = R.string.search))
                     },
                     modifier = Modifier.fillMaxWidth()
-                        .padding(8.dp)
+                        .padding(
+                            top = 8.dp,
+                            start = 8.dp,
+                            end = 8.dp
+                        )
                 )
-
-                Spacer(Modifier.size(8.dp))
 
                 LaunchedEffect("resources") {
                     async(Dispatchers.IO) {
@@ -117,10 +125,12 @@ fun ListAvailableResourcesDialog(
                 Spacer(Modifier.size(8.dp))
 
                 Row {
-                    Button(
-                        onClick = onDismiss
+                    TextButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.fillMaxWidth()
+                            .height(48.dp)
                     ) {
-                        Text(stringResource(id = R.string.cancel))
+                        Text(stringResource(id = R.string.close))
                     }
                 }
             }

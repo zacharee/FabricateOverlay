@@ -1,5 +1,6 @@
 package tk.zwander.fabricateoverlaysample.ui.pages
 
+import android.app.Activity
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.CircularProgressIndicator
@@ -45,6 +46,8 @@ fun AppListPage(
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
+        (LocalContext.current as Activity).setTitle(R.string.apps)
+
         TextField(
             value = filter,
             onValueChange = { filter = it },
@@ -52,6 +55,7 @@ fun AppListPage(
                 Text(stringResource(id = R.string.search))
             },
             modifier = Modifier.fillMaxWidth()
+                .padding(8.dp)
         )
 
         Spacer(Modifier.size(8.dp))

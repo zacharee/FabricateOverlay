@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.pm.ApplicationInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Parcelable
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -14,10 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.lsposed.hiddenapibypass.HiddenApiBypass
-import tk.zwander.fabricateoverlay.FabricatedOverlay
-import tk.zwander.fabricateoverlay.OverlayAPI
 import tk.zwander.fabricateoverlay.ShizukuUtils
-import tk.zwander.fabricateoverlaysample.ui.pages.AddOverlayListPage
 import tk.zwander.fabricateoverlaysample.ui.pages.AppListPage
 import tk.zwander.fabricateoverlaysample.ui.pages.CurrentOverlaysListPage
 import tk.zwander.fabricateoverlaysample.ui.pages.HomePage
@@ -63,18 +59,6 @@ class MainActivity : AppCompatActivity() {
                         }
                         composable("app_list") {
                             AppListPage(navController)
-                        }
-                        composable(
-                            route = "add_overlay",
-                        ) {
-                            navController.previousBackStackEntry?.arguments?.getParcelable<ApplicationInfo>("appInfo")?.let {
-                                appInfoArg = it
-                            }
-
-                            AddOverlayListPage(
-                                navController,
-                                appInfoArg!!
-                            )
                         }
                         composable(
                             route = "list_overlays"

@@ -101,169 +101,188 @@ fun AddOverlayEntryDialog(
     var valueAppend by remember { mutableStateOf("") }
     val context = LocalContext.current
 
-    AlertDialog(
-        onDismissRequest = { onDismiss() },
-        title = {
-            Text(resourceName)
-        },
-        text = {
-            when (resourceType) {
-                in listOf(
-                    TypedValue.TYPE_INT_DEC,
-                    TypedValue.TYPE_INT_COLOR_ARGB8
-                ) -> {
-                    TextField(
-                        value = value,
-                        onValueChange = {
-                            value = it.run {
-                                if (resourceType == TypedValue.TYPE_INT_COLOR_ARGB8) {
-                                    filter { f ->
-                                        f.isDigit() || f in listOf(
-                                            'x',
-                                            'a',
-                                            'b',
-                                            'c',
-                                            'd',
-                                            'e',
-                                            'f'
-                                        )
-                                    }
-                                } else {
-                                    this
-                                }
-                            }
-                        },
-                        label = {
-                            Text("${stringResource(R.string.value)}${if (labelExtras != null) " ($labelExtras)" else ""}")
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = when (resourceType) {
-                                TypedValue.TYPE_INT_DEC -> KeyboardType.Number
-                                else -> KeyboardType.Text
-                            }
-                        )
-                    )
-                }
+    Dialog(
+        onDismissRequest = onDismiss
+    ) {
+        Surface {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Text(resourceName)
 
-                TypedValue.TYPE_DIMENSION -> {
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        TextField(
-                            value = value,
-                            onValueChange = {
-                                value = it
-                            },
-                            label = {
-                                Text("${stringResource(R.string.value)}${if (labelExtras != null) " ($labelExtras)" else ""}")
-                            },
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number
-                            ),
-                            modifier = Modifier.weight(1f)
-                        )
+                Spacer(Modifier.size(8.dp))
 
-                        var expanded by remember { mutableStateOf(false) }
-
-                        if (valueAppend.isBlank()) {
-                            valueAppend = "dp"
-                        }
-
-                        Spacer(Modifier.size(8.dp))
-
-                        Box {
-                            Text(
-                                text = valueAppend,
-                                modifier = Modifier
-                                    .clickable {
-                                        expanded = true
-                                    }
-                                    .widthIn(min = 48.dp)
-                                    .heightIn(min = 48.dp)
-                            )
-
-                            DropdownMenu(
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false }
-                            ) {
-                                listOf(
-                                    "px",
-                                    "dp",
-                                    "pt",
-                                    "in",
-                                    "mm",
-                                    "sp"
-                                ).forEach { unit ->
-                                    DropdownMenuItem(
-                                        onClick = {
-                                            expanded = false
-                                            valueAppend = unit
+                Box(
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+                ) {
+                    when (resourceType) {
+                        in listOf(
+                            TypedValue.TYPE_INT_DEC,
+                            TypedValue.TYPE_INT_COLOR_ARGB8
+                        ) -> {
+                            TextField(
+                                value = value,
+                                onValueChange = {
+                                    value = it.run {
+                                        if (resourceType == TypedValue.TYPE_INT_COLOR_ARGB8) {
+                                            filter { f ->
+                                                f.isDigit() || f in listOf(
+                                                    'x',
+                                                    'a',
+                                                    'b',
+                                                    'c',
+                                                    'd',
+                                                    'e',
+                                                    'f'
+                                                )
+                                            }
+                                        } else {
+                                            this
                                         }
-                                    ) {
-                                        Text(unit)
                                     }
+                                },
+                                label = {
+                                    Text("${stringResource(R.string.value)}${if (labelExtras != null) " ($labelExtras)" else ""}")
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = when (resourceType) {
+                                        TypedValue.TYPE_INT_DEC -> KeyboardType.Number
+                                        else -> KeyboardType.Text
+                                    }
+                                ),
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+
+                        TypedValue.TYPE_DIMENSION -> {
+                            Row(
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                TextField(
+                                    value = value,
+                                    onValueChange = {
+                                        value = it
+                                    },
+                                    label = {
+                                        Text("${stringResource(R.string.value)}${if (labelExtras != null) " ($labelExtras)" else ""}")
+                                    },
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Number
+                                    ),
+                                    modifier = Modifier.weight(1f)
+                                )
+
+                                var expanded by remember { mutableStateOf(false) }
+
+                                if (valueAppend.isBlank()) {
+                                    valueAppend = "dp"
+                                }
+
+                                Spacer(Modifier.size(8.dp))
+
+                                Box {
+                                    Text(
+                                        text = valueAppend,
+                                        modifier = Modifier
+                                            .clickable {
+                                                expanded = true
+                                            }
+                                            .widthIn(min = 48.dp)
+                                            .heightIn(min = 48.dp)
+                                    )
+
+                                    DropdownMenu(
+                                        expanded = expanded,
+                                        onDismissRequest = { expanded = false }
+                                    ) {
+                                        listOf(
+                                            "px",
+                                            "dp",
+                                            "pt",
+                                            "in",
+                                            "mm",
+                                            "sp"
+                                        ).forEach { unit ->
+                                            DropdownMenuItem(
+                                                onClick = {
+                                                    expanded = false
+                                                    valueAppend = unit
+                                                }
+                                            ) {
+                                                Text(unit)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        TypedValue.TYPE_INT_BOOLEAN -> {
+                            if (value.isBlank()) {
+                                value = "false"
+                            }
+
+                            Box(
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Row(
+                                    modifier = Modifier.align(Alignment.Center)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.enabled),
+                                        modifier = Modifier.align(Alignment.CenterVertically)
+                                    )
+
+                                    Spacer(Modifier.weight(1f))
+
+                                    Checkbox(
+                                        checked = value == "true",
+                                        onCheckedChange = {
+                                            value = it.toString()
+                                        },
+                                        modifier = Modifier.align(Alignment.CenterVertically)
+                                    )
                                 }
                             }
                         }
                     }
                 }
 
-                TypedValue.TYPE_INT_BOOLEAN -> {
-                    if (value.isBlank()) {
-                        value = "false"
-                    }
+                Spacer(Modifier.size(8.dp))
 
-                    Box(
-                        modifier = Modifier.fillMaxWidth()
+                Row {
+                    TextButton(
+                        onClick = {
+                            onDismiss()
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(48.dp)
                     ) {
-                        Row(
-                            modifier = Modifier.align(Alignment.Center)
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.enabled),
-                                modifier = Modifier.align(Alignment.CenterVertically)
-                            )
-
-                            Spacer(Modifier.weight(1f))
-
-                            Checkbox(
-                                checked = value == "true",
-                                onCheckedChange = {
-                                    value = it.toString()
-                                },
-                                modifier = Modifier.align(Alignment.CenterVertically)
-                            )
-                        }
+                        Text(stringResource(R.string.cancel))
                     }
-                }
-            }
-        },
-        buttons = {
-            Row {
-                Button(
-                    onClick = {
-                        onDismiss()
-                    }
-                ) {
-                    Text(stringResource(R.string.cancel))
-                }
 
-                Button(
-                    onClick = {
-                        if (value.isNotBlank()) {
-                            onApply(value, valueAppend)
-                        } else {
-                            Toast.makeText(
-                                context,
-                                context.resources.getString(R.string.please_enter_value),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                    TextButton(
+                        onClick = {
+                            if (value.isNotBlank()) {
+                                onApply(value, valueAppend)
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    context.resources.getString(R.string.please_enter_value),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(48.dp)
+                    ) {
+                        Text(stringResource(R.string.apply))
                     }
-                ) {
-                    Text(stringResource(R.string.apply))
                 }
             }
         }
-    )
+    }
 }

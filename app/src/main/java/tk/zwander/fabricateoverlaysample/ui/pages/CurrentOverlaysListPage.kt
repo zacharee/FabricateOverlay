@@ -1,15 +1,17 @@
 package tk.zwander.fabricateoverlaysample.ui.pages
 
+import android.app.Activity
 import android.content.pm.ApplicationInfo
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import tk.zwander.fabricateoverlay.FabricatedOverlay
@@ -30,29 +32,49 @@ fun CurrentOverlaysListPage(
     val context = LocalContext.current
 
     Column {
-        Row {
-            Button(
-                onClick = {
-                    showingResDialog = true
-                }
-            ) {
-                Text(stringResource(R.string.add))
-            }
+        (LocalContext.current as Activity).title = info.loadLabel(context.packageManager)
 
-            Button(
-                onClick = {
-                    showingSaveDialog = true
-                }
-            ) {
-                Text(stringResource(id = R.string.save))
-            }
-        }
+//        Text(
+//            text = info.loadLabel(context.packageManager).toString(),
+//            fontSize = 18.sp,
+//            fontWeight = FontWeight.Bold,
+//            modifier = Modifier.padding(8.dp)
+//        )
+//
+//        Spacer(Modifier.size(8.dp))
 
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier.weight(1f)
+        ) {
             items(overlays.size) { index ->
                 CurrentOverlayEntriesItem(info = overlays[index]) {
                     overlays.remove(it)
                 }
+            }
+        }
+
+        Spacer(Modifier.size(8.dp))
+
+        Row {
+            TextButton(
+                onClick = {
+                    showingResDialog = true
+                },
+                modifier = Modifier.weight(1f)
+                    .height(48.dp)
+            ) {
+                Text(stringResource(R.string.add))
+            }
+
+            TextButton(
+                onClick = {
+                    showingSaveDialog = true
+                },
+                modifier = Modifier.weight(1f)
+                    .height(48.dp),
+                enabled = overlays.isNotEmpty()
+            ) {
+                Text(stringResource(id = R.string.save))
             }
         }
     }
@@ -79,14 +101,18 @@ fun CurrentOverlaysListPage(
                 )
             },
             buttons = {
-                Row {
-                    Button(
-                        onClick = { showingSaveDialog = false }
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    TextButton(
+                        onClick = { showingSaveDialog = false },
+                        modifier = Modifier.weight(1f)
+                            .height(48.dp)
                     ) {
                         Text(stringResource(id = R.string.cancel))
                     }
 
-                    Button(
+                    TextButton(
                         onClick = {
                             OverlayAPI.getInstance(context) { api ->
                                 api.registerFabricatedOverlay(FabricatedOverlay(
@@ -102,7 +128,9 @@ fun CurrentOverlaysListPage(
 
                                 navController.popBackStack("main", false)
                             }
-                        }
+                        },
+                        modifier = Modifier.weight(1f)
+                            .height(48.dp)
                     ) {
                         Text(stringResource(id = R.string.save))
                     }

@@ -12,6 +12,9 @@
     <string name="resources">Resources</string>
     <string name="enabled">Enabled</string>
     <string name="search">Search</string>
+    <string name="overlays">Overlays</string>
+    <string name="apps">Apps</string>
+    <string name="close">Close</string>
 
     <string name="please_enter_value">Please enter a value.</string>
     <string name="overlay_name">Overlay Name.</string>
