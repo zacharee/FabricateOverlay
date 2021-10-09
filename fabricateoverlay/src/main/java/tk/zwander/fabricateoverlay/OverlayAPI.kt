@@ -286,6 +286,9 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
         return OverlayInfo(platformResult!!)
     }
 
+    /**
+     * Use this for changing the state of fabricated overlays.
+     */
     fun setEnabled(identifier: Any, enable: Boolean, userId: Int) {
         val omtbInstance = omtbClass.newInstance()
         omtbClass.getMethod(
