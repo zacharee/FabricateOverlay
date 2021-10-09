@@ -24,6 +24,8 @@ Check out the sample app for an example on how the library can be implemented.
 
 The sample app is a fully functional resource overlay app (for the supported types).
 
+Before you use it, though, you'll need [Shizuku](https://shizuku.rikka.app). Download the Shizuku app and follow its instructions to get it running. Once it says that Shizuku is running, come back here.
+
 Open the app and tap the "Add" button at the bottom to start the process. Select an app from the list that shows up, and then press the "Add" button on the next screen. Select the resource to overlay and then set the desired value. You can override multiple resources.
 
 Once you're done setting the resources to overlay, press the "Save" button, choose a name for the overlay (only alphanumeric characters and "_" and "." are allowed) and confirm. You'll be brought back to the main screen and you should see the newly created overlay there.
