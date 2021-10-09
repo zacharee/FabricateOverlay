@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.pm.ApplicationInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
+import android.widget.TextView
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -12,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import tk.zwander.fabricateoverlay.ShizukuUtils
 import tk.zwander.fabricateoverlaysample.ui.pages.AppListPage
@@ -26,7 +29,8 @@ class MainActivity : AppCompatActivity() {
         HiddenApiBypass.setHiddenApiExemptions("L")
 
         if (!ShizukuUtils.shizukuAvailable) {
-            finish()
+            showShizukuDialog()
+            return
         }
 
         if (ShizukuUtils.hasShizukuPermission(this)) {
@@ -36,10 +40,27 @@ class MainActivity : AppCompatActivity() {
                 if (granted) {
                     init()
                 } else {
-                    finish()
+                    showShizukuDialog()
                 }
             }
         }
+    }
+
+    private fun showShizukuDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setMessage(R.string.shizuku_not_set_up)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                finish()
+            }
+            .setCancelable(false)
+            .create()
+            .apply {
+                setOnShowListener {
+                    findViewById<TextView>(Class.forName("com.android.internal.R\$id").getField("message").getInt(null))
+                        ?.movementMethod = LinkMovementMethod()
+                }
+            }
+            .show()
     }
 
     private fun init() {
