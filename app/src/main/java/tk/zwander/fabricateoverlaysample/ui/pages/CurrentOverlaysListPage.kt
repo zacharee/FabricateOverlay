@@ -34,15 +34,6 @@ fun CurrentOverlaysListPage(
     Column {
         (LocalContext.current as Activity).title = info.loadLabel(context.packageManager)
 
-//        Text(
-//            text = info.loadLabel(context.packageManager).toString(),
-//            fontSize = 18.sp,
-//            fontWeight = FontWeight.Bold,
-//            modifier = Modifier.padding(8.dp)
-//        )
-//
-//        Spacer(Modifier.size(8.dp))
-
         LazyColumn(
             modifier = Modifier.weight(1f)
         ) {
@@ -55,18 +46,25 @@ fun CurrentOverlaysListPage(
 
         Spacer(Modifier.size(8.dp))
 
-        Row {
-            TextButton(
+        Row(
+            modifier = Modifier.padding(8.dp)
+        ) {
+            OutlinedButton(
                 onClick = {
                     showingResDialog = true
                 },
                 modifier = Modifier.weight(1f)
                     .height(48.dp)
             ) {
-                Text(stringResource(R.string.add))
+                Text(
+                    text = stringResource(R.string.add),
+                    fontSize = 18.sp
+                )
             }
 
-            TextButton(
+            Spacer(Modifier.size(4.dp))
+
+            OutlinedButton(
                 onClick = {
                     showingSaveDialog = true
                 },
@@ -74,7 +72,10 @@ fun CurrentOverlaysListPage(
                     .height(48.dp),
                 enabled = overlays.isNotEmpty()
             ) {
-                Text(stringResource(id = R.string.save))
+                Text(
+                    text = stringResource(id = R.string.save),
+                    fontSize = 18.sp
+                )
             }
         }
     }
