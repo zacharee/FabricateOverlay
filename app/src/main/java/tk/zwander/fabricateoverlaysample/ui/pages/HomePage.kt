@@ -35,19 +35,23 @@ fun HomePage(
 
         Spacer(Modifier.size(8.dp))
 
-        OutlinedButton(
-            onClick = {
-                navController.navigate("app_list")
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(64.dp),
+        Box(
+            modifier = Modifier.padding(8.dp)
         ) {
-            Text(
-                text = stringResource(R.string.add_overlay),
-                fontSize = 24.sp,
-                modifier = Modifier.align(Alignment.CenterVertically)
-            )
+            OutlinedButton(
+                onClick = {
+                    navController.navigate("app_list")
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(64.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.add_overlay),
+                    fontSize = 24.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+            }
         }
     }
 }
