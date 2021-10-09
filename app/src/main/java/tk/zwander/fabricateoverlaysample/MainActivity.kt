@@ -1,6 +1,7 @@
 package tk.zwander.fabricateoverlaysample
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.pm.ApplicationInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,6 +12,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.darkColors
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -73,12 +75,17 @@ class MainActivity : AppCompatActivity() {
                         mutableStateOf<ApplicationInfo?>(null)
                     }
                     val navController = rememberNavController()
+                    val activity = LocalContext.current as Activity
 
                     NavHost(navController = navController, startDestination = "main") {
                         composable("main") {
+                            activity.setTitle(R.string.overlays)
+
                             HomePage(navController)
                         }
                         composable("app_list") {
+                            activity.setTitle(R.string.apps)
+
                             AppListPage(navController)
                         }
                         composable(
@@ -87,6 +94,8 @@ class MainActivity : AppCompatActivity() {
                             navController.previousBackStackEntry?.arguments?.getParcelable<ApplicationInfo>("appInfo")?.let {
                                 appInfoArg = it
                             }
+
+                            activity.title = appInfoArg?.loadLabel(activity.packageManager)
 
                             CurrentOverlaysListPage(
                                 navController,
