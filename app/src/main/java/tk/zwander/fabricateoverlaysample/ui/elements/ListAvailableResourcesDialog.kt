@@ -1,8 +1,9 @@
 package tk.zwander.fabricateoverlaysample.ui.elements
 
 import android.content.pm.ApplicationInfo
-import android.util.Log
 import android.util.TypedValue
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -25,7 +25,7 @@ import tk.zwander.fabricateoverlaysample.R
 import tk.zwander.fabricateoverlaysample.data.AvailableResourceItemData
 import tk.zwander.fabricateoverlaysample.util.getAppResources
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, androidx.compose.animation.ExperimentalAnimationApi::class)
 @Composable
 fun ListAvailableResourcesDialog(
     info: ApplicationInfo,
@@ -39,6 +39,11 @@ fun ListAvailableResourcesDialog(
 
     val context = LocalContext.current
 
+    val transition = updateTransition(
+        targetState = resources.isEmpty(),
+        label = "progress"
+    )
+
     Dialog(
         onDismissRequest = onDismiss
     ) {
@@ -48,10 +53,12 @@ fun ListAvailableResourcesDialog(
             ) {
                 Text(
                     text = stringResource(id = R.string.resources),
-                    modifier = Modifier.padding(
-                        top = 16.dp,
-                        start = 8.dp
-                    ).fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(
+                            top = 16.dp,
+                            start = 8.dp
+                        )
+                        .fillMaxWidth(),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -66,7 +73,8 @@ fun ListAvailableResourcesDialog(
                     label = {
                         Text(stringResource(id = R.string.search))
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(
                             top = 8.dp,
                             start = 8.dp,
@@ -80,41 +88,48 @@ fun ListAvailableResourcesDialog(
                     }
                 }
 
-                if (resources.isEmpty()) {
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth()
-                    ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                    }
-                } else {
-                    LazyColumn(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        resources.forEach { (k, v) ->
-                            stickyHeader {
-                                Surface {
-                                    Text(
-                                        text = k,
-                                        modifier = Modifier
-                                            .heightIn(min = 32.dp)
-                                            .fillMaxWidth()
-                                            .padding(8.dp),
-                                        fontSize = 18.sp
-                                    )
-                                }
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                ) {
+                    transition.AnimatedContent {
+                        if (it) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.align(Alignment.Center)
+                                )
                             }
+                        } else {
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                resources.forEach { (k, v) ->
+                                    stickyHeader {
+                                        Surface {
+                                            Text(
+                                                text = k,
+                                                modifier = Modifier
+                                                    .heightIn(min = 32.dp)
+                                                    .fillMaxWidth()
+                                                    .padding(8.dp),
+                                                fontSize = 18.sp
+                                            )
+                                        }
+                                    }
 
-                            items(v.size) {
-                                val item = v[it]
+                                    items(v.size) {
+                                        val item = v[it]
 
-                                if (item.name.contains(filter, true)) {
-                                    AvailableResourceItem(item) { data ->
-                                        resData = data
-                                        showingResDialog = true
+                                        if (item.name.contains(filter, true)) {
+                                            AvailableResourceItem(item) { data ->
+                                                resData = data
+                                                showingResDialog = true
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -122,12 +137,14 @@ fun ListAvailableResourcesDialog(
                     }
                 }
 
-                Spacer(Modifier.size(8.dp))
-
-                Row {
+                Row(
+                    modifier = Modifier
+                        .padding(8.dp)
+                ) {
                     TextButton(
                         onClick = onDismiss,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
                             .height(48.dp)
                     ) {
                         Text(stringResource(id = R.string.close))

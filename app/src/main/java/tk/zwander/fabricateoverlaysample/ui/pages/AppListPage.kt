@@ -1,5 +1,7 @@
 package tk.zwander.fabricateoverlaysample.ui.pages
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.CircularProgressIndicator
@@ -19,6 +21,7 @@ import tk.zwander.fabricateoverlaysample.R
 import tk.zwander.fabricateoverlaysample.ui.elements.AppItem
 import java.util.*
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AppListPage(
     navController: NavController
@@ -26,6 +29,11 @@ fun AppListPage(
     var apps by remember { mutableStateOf(listOf<LoadedApplicationInfo>()) }
     var filter by remember { mutableStateOf("") }
     val context = LocalContext.current
+
+    val transition = updateTransition(
+        targetState = apps.isEmpty(),
+        label = "progress"
+    )
 
     LaunchedEffect("app_launch") {
         async(Dispatchers.IO) {
@@ -51,32 +59,42 @@ fun AppListPage(
             label = {
                 Text(stringResource(id = R.string.search))
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(8.dp)
         )
 
         Spacer(Modifier.size(8.dp))
 
-        if (apps.isEmpty()) {
-            Box(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
-        } else {
-            LazyColumn {
-                items(apps.size) {
-                    val item = apps[it]
+        Box(
+            modifier = Modifier.weight(1f)
+                .fillMaxWidth()
+        ) {
+            transition.AnimatedContent {
+                if (it) {
+                    Box(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(apps.size) {
+                            val item = apps[it]
 
-                    if (item.label.contains(filter, true) || item.info.packageName.contains(filter, true)) {
-                        AppItem(item) { info ->
-                            navController.currentBackStackEntry?.arguments?.putParcelable("appInfo", info.info)
+                            if (item.label.contains(filter, true) || item.info.packageName.contains(filter, true)) {
+                                AppItem(item) { info ->
+                                    navController.currentBackStackEntry?.arguments?.putParcelable("appInfo", info.info)
 
-                            navController.navigate(
-                                route = "list_overlays"
-                            )
+                                    navController.navigate(
+                                        route = "list_overlays"
+                                    )
+                                }
+                            }
                         }
                     }
                 }

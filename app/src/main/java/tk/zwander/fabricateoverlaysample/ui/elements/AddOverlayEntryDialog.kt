@@ -1,14 +1,18 @@
 package tk.zwander.fabricateoverlaysample.ui.elements
 
+import android.util.Log
 import android.util.TypedValue
 import android.widget.Toast
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -106,15 +110,24 @@ fun AddOverlayEntryDialog(
     ) {
         Surface {
             Column(
-                modifier = Modifier.fillMaxWidth()
-                    .padding(8.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = 16.dp,
+                        start = 16.dp,
+                        end = 16.dp,
+                        bottom = 8.dp
+                    )
             ) {
                 Text(resourceName)
 
                 Spacer(Modifier.size(8.dp))
 
                 Box(
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+                    modifier = Modifier.padding(
+                        top = 16.dp,
+                        bottom = 16.dp
+                    )
                 ) {
                     when (resourceType) {
                         in listOf(
@@ -158,6 +171,7 @@ fun AddOverlayEntryDialog(
                         TypedValue.TYPE_DIMENSION -> {
                             Row(
                                 modifier = Modifier.fillMaxWidth()
+                                    .height(IntrinsicSize.Max)
                             ) {
                                 TextField(
                                     value = value,
@@ -170,7 +184,7 @@ fun AddOverlayEntryDialog(
                                     keyboardOptions = KeyboardOptions(
                                         keyboardType = KeyboardType.Number
                                     ),
-                                    modifier = Modifier.weight(1f)
+                                    modifier = Modifier.weight(1.0f)
                                 )
 
                                 var expanded by remember { mutableStateOf(false) }
@@ -181,16 +195,29 @@ fun AddOverlayEntryDialog(
 
                                 Spacer(Modifier.size(8.dp))
 
-                                Box {
-                                    Text(
-                                        text = valueAppend,
-                                        modifier = Modifier
-                                            .clickable {
-                                                expanded = true
-                                            }
-                                            .widthIn(min = 48.dp)
-                                            .heightIn(min = 48.dp)
-                                    )
+                                Box(
+                                    modifier = Modifier.wrapContentWidth()
+                                        .fillMaxHeight()
+                                ) {
+                                    OutlinedButton(
+                                        onClick = {
+                                            expanded = true
+                                        },
+                                        modifier = Modifier.widthIn(min = 48.dp)
+                                            .fillMaxHeight()
+                                    ) {
+                                        Text(valueAppend)
+                                    }
+
+//                                    Text(
+//                                        text = valueAppend,
+//                                        modifier = Modifier
+//                                            .clickable {
+//                                                expanded = true
+//                                            }
+//                                            .widthIn(min = 48.dp)
+//                                            .heightIn(min = 48.dp)
+//                                    )
 
                                     DropdownMenu(
                                         expanded = expanded,

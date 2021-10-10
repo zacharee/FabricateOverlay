@@ -1,6 +1,7 @@
 package tk.zwander.fabricateoverlaysample.ui.pages
 
 import android.content.pm.ApplicationInfo
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
@@ -18,6 +19,7 @@ import tk.zwander.fabricateoverlaysample.R
 import tk.zwander.fabricateoverlaysample.ui.elements.CurrentOverlayEntriesItem
 import tk.zwander.fabricateoverlaysample.ui.elements.ListAvailableResourcesDialog
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun CurrentOverlaysListPage(
     navController: NavController,
