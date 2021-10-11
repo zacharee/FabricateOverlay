@@ -31,3 +31,9 @@ Open the app and tap the "Add" button at the bottom to start the process. Select
 Once you're done setting the resources to overlay, press the "Save" button, choose a name for the overlay (only alphanumeric characters and "_" and "." are allowed) and confirm. You'll be brought back to the main screen and you should see the newly created overlay there.
 
 Current fabricated overlays made by the sample app are grouped by target app. You can enable and disable them individually and remove ones you don't want anymore.
+
+# Links
+
+For more details on how this works, check out my [article on XDA](https://xda-developers.com/android-12-theming).
+
+For a general-purpose overlay manager, check out my OverlayManager app. The [source code](https://github.com/zacharee/OverlayManager) is available on GitHub, but the precompiled app is only available on my [Patreon](https://patreon.com/zacharywander).
