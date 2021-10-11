@@ -34,7 +34,7 @@ class FabricatedOverlay(
          * This is used if you need to unregister a fabricated overlay.
          */
         fun generateOverlayIdentifier(
-            overlayName: String,
+            overlayName: String?,
             sourcePackage: String = "com.android.shell"
         ): Any {
             return oiClass.getConstructor(String::class.java, String::class.java)

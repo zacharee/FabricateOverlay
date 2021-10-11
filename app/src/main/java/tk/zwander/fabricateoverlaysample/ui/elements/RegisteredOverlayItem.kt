@@ -28,7 +28,7 @@ fun RegisteredOverlayItem(
         OverlayAPI.getInstance(context) { api ->
             api.setEnabled(
                 FabricatedOverlay.generateOverlayIdentifier(
-                    info.overlayName!!,
+                    info.overlayName,
                     info.packageName
                 ), !info.isEnabled, 0
             )
@@ -99,7 +99,7 @@ fun RegisteredOverlayItem(
                             OverlayAPI.getInstance(context) { api ->
                                 api.unregisterFabricatedOverlay(
                                     FabricatedOverlay.generateOverlayIdentifier(
-                                        info.overlayName!!
+                                        info.overlayName
                                     )
                                 )
                                 showingRemoveDialog = false
