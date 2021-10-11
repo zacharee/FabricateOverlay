@@ -114,6 +114,7 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
                         ).processNameSuffix("service")
                             .debuggable(BuildConfig.DEBUG)
                             .version(API_VERSION)
+                            .daemon(false)
 
                         Shizuku.bindUserService(serviceArgs, connection)
                     }
