@@ -34,6 +34,6 @@ Current fabricated overlays made by the sample app are grouped by target app. Yo
 
 # Links
 
-For more details on how this works, check out my [article on XDA](https://xda-developers.com/android-12-theming).
+For more details on how this works, check out my [article on XDA](https://www.xda-developers.com/android-12s-fabricated-overlay-api-brings-back-rootless-themes/).
 
 For a general-purpose overlay manager, check out my OverlayManager app. The [source code](https://github.com/zacharee/OverlayManager) is available on GitHub, but the precompiled app is only available on my [Patreon](https://patreon.com/zacharywander).
