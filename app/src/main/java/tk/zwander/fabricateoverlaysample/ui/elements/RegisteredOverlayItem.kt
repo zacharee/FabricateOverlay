@@ -85,16 +85,20 @@ fun RegisteredOverlayItem(
         AlertDialog(
             onDismissRequest = { showingRemoveDialog = false },
             buttons = {
-                Row {
-                    Button(
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    TextButton(
                         onClick = {
                             showingRemoveDialog = false
-                        }
+                        },
+                        modifier = Modifier.weight(1f)
+                            .heightIn(min = 48.dp)
                     ) {
                         Text(stringResource(id = R.string.no))
                     }
 
-                    Button(
+                    TextButton(
                         onClick = {
                             OverlayAPI.getInstance(context) { api ->
                                 api.unregisterFabricatedOverlay(
@@ -105,7 +109,9 @@ fun RegisteredOverlayItem(
                                 showingRemoveDialog = false
                                 onChange()
                             }
-                        }
+                        },
+                        modifier = Modifier.weight(1f)
+                            .heightIn(min = 48.dp)
                     ) {
                         Text(stringResource(id = R.string.yes))
                     }
