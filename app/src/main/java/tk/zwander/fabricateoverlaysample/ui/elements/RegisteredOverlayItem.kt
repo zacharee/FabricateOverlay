@@ -2,14 +2,18 @@ package tk.zwander.fabricateoverlaysample.ui.elements
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import tk.zwander.fabricateoverlay.FabricatedOverlay
 import tk.zwander.fabricateoverlay.OverlayAPI
@@ -39,8 +43,8 @@ fun RegisteredOverlayItem(
 
     Card(
         modifier = Modifier
-            .fillMaxWidth()
             .heightIn(min = 48.dp)
+            .fillMaxWidth()
             .padding(4.dp)
     ) {
         Row(
@@ -48,17 +52,24 @@ fun RegisteredOverlayItem(
                 .clickable {
                     change()
                 }
-                .fillMaxSize()
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min)
                 .padding(8.dp)
         ) {
             Image(
                 painter = painterResource(R.drawable.ic_baseline_delete_24),
                 contentDescription = stringResource(R.string.remove_overlay),
                 modifier = Modifier
-                    .clickable {
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = rememberRipple(bounded = false)
+                    ) {
                         showingRemoveDialog = true
                     }
                     .align(Alignment.CenterVertically)
+                    .size(48.dp)
+                    .aspectRatio(1f),
+                contentScale = ContentScale.Inside
             )
 
             Spacer(Modifier.size(8.dp))
@@ -68,6 +79,7 @@ fun RegisteredOverlayItem(
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .weight(1f)
+                    .fillMaxHeight()
             )
 
             Spacer(Modifier.size(8.dp))
