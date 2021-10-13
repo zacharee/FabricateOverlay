@@ -15,6 +15,7 @@ import tk.zwander.fabricateoverlay.FabricatedOverlay
 import tk.zwander.fabricateoverlay.OverlayAPI
 import tk.zwander.fabricateoverlay.OverlayInfo
 import tk.zwander.fabricateoverlaysample.R
+import tk.zwander.fabricateoverlaysample.ui.elements.dialogs.RemoveOverlayDialog
 
 @Composable
 fun RegisteredOverlayItem(
@@ -82,44 +83,10 @@ fun RegisteredOverlayItem(
     }
 
     if (showingRemoveDialog) {
-        AlertDialog(
-            onDismissRequest = { showingRemoveDialog = false },
-            buttons = {
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    TextButton(
-                        onClick = {
-                            showingRemoveDialog = false
-                        },
-                        modifier = Modifier.weight(1f)
-                            .heightIn(min = 48.dp)
-                    ) {
-                        Text(stringResource(id = R.string.no))
-                    }
-
-                    TextButton(
-                        onClick = {
-                            OverlayAPI.getInstance(context) { api ->
-                                api.unregisterFabricatedOverlay(
-                                    FabricatedOverlay.generateOverlayIdentifier(
-                                        info.overlayName
-                                    )
-                                )
-                                showingRemoveDialog = false
-                                onChange()
-                            }
-                        },
-                        modifier = Modifier.weight(1f)
-                            .heightIn(min = 48.dp)
-                    ) {
-                        Text(stringResource(id = R.string.yes))
-                    }
-                }
-            },
-            text = {
-                Text(stringResource(id = R.string.delete_confirmation))
-            }
+        RemoveOverlayDialog(
+            info = info,
+            onDismiss = { showingRemoveDialog = false },
+            onChange = onChange
         )
     }
 }

@@ -20,7 +20,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import tk.zwander.fabricateoverlay.ShizukuUtils
 import tk.zwander.fabricateoverlaysample.ui.pages.AppListPage
-import tk.zwander.fabricateoverlaysample.ui.pages.CurrentOverlaysListPage
+import tk.zwander.fabricateoverlaysample.ui.pages.CurrentOverlayEntriesListPage
 import tk.zwander.fabricateoverlaysample.ui.pages.HomePage
 
 @SuppressLint("PrivateApi")
@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity() {
 
                             activity.title = appInfoArg?.loadLabel(activity.packageManager)
 
-                            CurrentOverlaysListPage(
+                            CurrentOverlayEntriesListPage(
                                 navController,
                                 appInfoArg!!
                             )

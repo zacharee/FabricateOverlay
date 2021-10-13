@@ -1,4 +1,4 @@
-package tk.zwander.fabricateoverlaysample.ui.elements
+package tk.zwander.fabricateoverlaysample.ui.elements.dialogs
 
 import android.content.pm.ApplicationInfo
 import android.util.TypedValue
@@ -23,6 +23,7 @@ import net.dongliu.apk.parser.ApkFile
 import tk.zwander.fabricateoverlay.FabricatedOverlayEntry
 import tk.zwander.fabricateoverlaysample.R
 import tk.zwander.fabricateoverlaysample.data.AvailableResourceItemData
+import tk.zwander.fabricateoverlaysample.ui.elements.AvailableResourceItem
 import tk.zwander.fabricateoverlaysample.util.getAppResources
 
 @OptIn(ExperimentalFoundationApi::class, androidx.compose.animation.ExperimentalAnimationApi::class)
