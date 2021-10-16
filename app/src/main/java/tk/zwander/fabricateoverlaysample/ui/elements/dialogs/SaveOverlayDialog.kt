@@ -35,7 +35,12 @@ fun SaveOverlayDialog(
         text = {
             TextField(
                 value = name,
-                onValueChange = { name = it },
+                onValueChange = {
+                    name = it.filter { char ->
+                        (char.isLetterOrDigit() || char == '.' || char == '_')
+                    }.replace(Regex("(_+)\\1"), "_")
+                        .replace(Regex("(\\.+)\\1"), ".")
+                },
                 label = { Text(stringResource(id = R.string.overlay_name)) }
             )
         },
@@ -45,7 +50,8 @@ fun SaveOverlayDialog(
             ) {
                 TextButton(
                     onClick = onDismiss,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
                         .height(48.dp)
                 ) {
                     Text(stringResource(id = R.string.cancel))
@@ -56,20 +62,21 @@ fun SaveOverlayDialog(
                         OverlayAPI.getInstance(context) { api ->
                             api.registerFabricatedOverlay(
                                 FabricatedOverlay(
-                                "${context.packageName}.${info.packageName}.${name}",
-                                info.packageName
-                            ).apply {
-                                overlayEntries.forEach { overlay ->
-                                    entries[overlay.resourceName] = overlay
-                                }
-                            })
+                                    "${context.packageName}.${info.packageName}.${name}",
+                                    info.packageName
+                                ).apply {
+                                    overlayEntries.forEach { overlay ->
+                                        entries[overlay.resourceName] = overlay
+                                    }
+                                })
 
                             onDismiss()
 
                             navController.popBackStack("main", false)
                         }
                     },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
                         .height(48.dp)
                 ) {
                     Text(stringResource(id = R.string.save))
