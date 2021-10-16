@@ -40,6 +40,8 @@ fun SaveOverlayDialog(
                         (char.isLetterOrDigit() || char == '.' || char == '_')
                     }.replace(Regex("(_+)\\1"), "_")
                         .replace(Regex("(\\.+)\\1"), ".")
+                        .replace("_.", "_")
+                        .replace("._", ".")
                 },
                 label = { Text(stringResource(id = R.string.overlay_name)) }
             )
