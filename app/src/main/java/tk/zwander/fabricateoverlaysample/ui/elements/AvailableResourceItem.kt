@@ -27,7 +27,7 @@ fun AvailableResourceItem(
                 }.padding(8.dp)
         ) {
             Text(
-                text = data.name
+                text = data.resourceName
             )
 
             Spacer(Modifier.size(8.dp))
