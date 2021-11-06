@@ -1,5 +1,6 @@
 package tk.zwander.fabricateoverlaysample.ui.elements
 
+import android.content.pm.PackageManager
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.*
@@ -26,9 +27,15 @@ fun RegisteredOverlayList(
                 registeredOverlays = withContext(Dispatchers.IO) {
                     api.getAllOverlays(0).mapNotNull { (key, value) ->
                         val filtered = value.filter { item -> item.isFabricated && item.overlayName?.contains(context.packageName) == true }
-
-                        if (filtered.isEmpty()) null else (context.packageManager.run {
-                            getApplicationInfo(key, 0).loadLabel(this) }.toString() to filtered)
+                        if (filtered.isEmpty()) null
+                        else (context.packageManager.run {
+                            try {
+                                getApplicationInfo(key, 0).loadLabel(this)
+                            } catch (nameNotFoundException: PackageManager.NameNotFoundException) {
+                                //package has been uninstalled before uninstalling related overlays
+                                key
+                            }
+                        }.toString() to filtered)
                     }.toMap().toSortedMap { o1, o2 -> o1.compareTo(o2, true) }
                 }
             }
