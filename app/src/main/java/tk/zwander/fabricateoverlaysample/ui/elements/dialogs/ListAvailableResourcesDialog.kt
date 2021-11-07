@@ -125,7 +125,7 @@ fun ListAvailableResourcesDialog(
                                     items(v.size) {
                                         val item = v[it]
 
-                                        if (item.name.contains(filter, true)) {
+                                        if (item.resourceName.contains(filter, true)) {
                                             AvailableResourceItem(item) { data ->
                                                 resData = data
                                                 showingResDialog = true

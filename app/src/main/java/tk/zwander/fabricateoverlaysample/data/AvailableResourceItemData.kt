@@ -2,6 +2,7 @@ package tk.zwander.fabricateoverlaysample.data
 
 data class AvailableResourceItemData(
     val name: String,
+    val resourceName: String,
     val type: Int,
     val values: Array<String>
 ) : Comparable<AvailableResourceItemData> {
