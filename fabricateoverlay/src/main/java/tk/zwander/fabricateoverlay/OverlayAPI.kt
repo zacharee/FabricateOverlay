@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package tk.zwander.fabricateoverlay
 
 import android.annotation.SuppressLint
@@ -33,6 +35,7 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
         /**
          * The current API version. You probably don't need to worry about this.
          */
+        @Suppress("MemberVisibilityCanBePrivate")
         const val API_VERSION = 1
 
         /**
@@ -408,6 +411,7 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
     /**
      * @param transaction should be an [android.content.om.OverlayManagerTransaction].
      */
+    @Suppress("MemberVisibilityCanBePrivate")
     fun commit(transaction: Any) {
         iomClass.getMethod(
             "commit",

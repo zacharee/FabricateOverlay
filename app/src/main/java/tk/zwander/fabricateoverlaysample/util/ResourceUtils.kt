@@ -1,9 +1,7 @@
 package tk.zwander.fabricateoverlaysample.util
 
 import android.content.Context
-import android.content.res.Resources
 import android.content.res.Resources.NotFoundException
-import android.util.Log
 import android.util.TypedValue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
@@ -16,8 +14,6 @@ import net.dongliu.apk.parser.struct.resource.ResourceTable
 import tk.zwander.fabricateoverlaysample.data.AvailableResourceItemData
 import java.nio.ByteBuffer
 import java.util.*
-import java.util.regex.Pattern
-import kotlin.collections.ArrayList
 
 
 @Suppress("UNCHECKED_CAST")

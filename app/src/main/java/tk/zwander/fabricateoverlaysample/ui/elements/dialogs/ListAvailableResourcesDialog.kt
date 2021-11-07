@@ -84,6 +84,7 @@ fun ListAvailableResourcesDialog(
                 )
 
                 LaunchedEffect("resources") {
+                    @Suppress("DeferredResultUnused")
                     async(Dispatchers.IO) {
                         resources = getAppResources(context, ApkFile(info.sourceDir))
                     }
@@ -122,8 +123,8 @@ fun ListAvailableResourcesDialog(
                                         }
                                     }
 
-                                    items(v.size) {
-                                        val item = v[it]
+                                    items(v.size) { index ->
+                                        val item = v[index]
 
                                         if (item.resourceName.contains(filter, true)) {
                                             AvailableResourceItem(item) { data ->

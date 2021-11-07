@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package tk.zwander.fabricateoverlay
 
 import android.annotation.SuppressLint

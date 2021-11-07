@@ -36,6 +36,7 @@ fun AppListPage(
     )
 
     LaunchedEffect("app_launch") {
+        @Suppress("DeferredResultUnused")
         async(Dispatchers.IO) {
             apps = TreeSet(
                 context.packageManager.getInstalledApplications(0)
@@ -83,8 +84,8 @@ fun AppListPage(
                     LazyColumn(
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        items(apps.size) {
-                            val item = apps[it]
+                        items(apps.size) { index ->
+                            val item = apps[index]
 
                             if (item.label.contains(filter, true) || item.info.packageName.contains(filter, true)) {
                                 AppItem(item) { info ->
