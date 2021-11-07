@@ -20,6 +20,23 @@ By default, the library will assume the use of Shizuku and use it to get a refer
 
 Check out the sample app for an example on how the library can be implemented.
 
+You can use JitPack to include the library in your own app.
+
+Add the JitPack repository to your root build.gradle:
+
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+  
+Add the library dependency to your module build.gradle:
+
+	dependencies {
+	        implementation 'com.github.zacharee:FabricateOverlay:VERSION'
+	}
+
 # Fabricated Overlay Sample
 
 The sample app is a fully functional resource overlay app (for the supported types).
