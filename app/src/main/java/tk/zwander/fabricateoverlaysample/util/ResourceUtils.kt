@@ -78,6 +78,7 @@ suspend fun getAppResources(
 
                     list[t]!!.add(AvailableResourceItemData(
                         fqrn,
+                        r[0].resourceEntry.key,
                         type,
                         context.getCurrentResourceValue(apk.apkMeta.packageName, fqrn)
                     ))
