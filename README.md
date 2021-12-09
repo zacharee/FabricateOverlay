@@ -1,3 +1,9 @@
+# Deprecated
+
+Android 12L (AKA Android 12.1) has patched the ability to create fabricated overlays as the shell user. Only system apps and root can create fabricated overlays now.
+
+It's unclear whether Android 12.0 will remain unpatched or not.
+
 # Fabricated Overlays
 
 Android 12 introduces a new API for creating "fabricated" overlays. Fabricated overlays are a form of virtual runtime resource overlay that can be applied on the fly. 
