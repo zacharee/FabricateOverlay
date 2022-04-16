@@ -43,7 +43,8 @@ fun RemoveOverlayDialog(
                         OverlayAPI.getInstance(context) { api ->
                             api.unregisterFabricatedOverlay(
                                 FabricatedOverlay.generateOverlayIdentifier(
-                                    info.overlayName
+                                    info.overlayName,
+                                    OverlayAPI.servicePackage ?: "com.android.shell"
                                 )
                             )
                             onDismiss()

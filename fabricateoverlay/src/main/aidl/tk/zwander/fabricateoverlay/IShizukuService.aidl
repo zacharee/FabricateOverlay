@@ -6,4 +6,5 @@ interface IShizukuService {
     void destroy() = 16777114;
 
     IBinder getIOM() = 1;
+    String getPackageName() = 2;
 }

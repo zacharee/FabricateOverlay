@@ -51,6 +51,7 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
                     val service = IShizukuService.Stub.asInterface(binder)
 
                     instance = OverlayAPI(ShizukuBinderWrapper(service.iom))
+                    servicePackage = service.packageName
 
                     callbacks.forEach { callback ->
                         callback(instance!!)
@@ -83,6 +84,13 @@ class OverlayAPI private constructor(private val iomService: IBinder) {
          */
         @Volatile
         private var instance: OverlayAPI? = null
+
+        /**
+         * The package of the Shizuku service (either "com.android.shell"
+         * or "android").
+         */
+        var servicePackage: String? = null
+            private set
 
         /**
          * Whether there's been a Shizuku Service bind request.

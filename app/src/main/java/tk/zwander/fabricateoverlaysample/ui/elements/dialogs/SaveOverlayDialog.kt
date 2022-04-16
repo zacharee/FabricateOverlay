@@ -65,7 +65,8 @@ fun SaveOverlayDialog(
                             api.registerFabricatedOverlay(
                                 FabricatedOverlay(
                                     "${context.packageName}.${info.packageName}.${name}",
-                                    info.packageName
+                                    info.packageName,
+                                    OverlayAPI.servicePackage ?: "com.android.shell"
                                 ).apply {
                                     overlayEntries.forEach { overlay ->
                                         entries[overlay.resourceName] = overlay

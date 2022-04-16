@@ -15,4 +15,11 @@ class ShizukuService : IShizukuService.Stub() {
     override fun getIOM(): IBinder {
         return SystemServiceHelper.getSystemService("overlay")
     }
+
+    override fun getPackageName(): String {
+        return when (android.os.Process.myUid()) {
+            2000 -> "com.android.shell"
+            else -> "android"
+        }
+    }
 }
